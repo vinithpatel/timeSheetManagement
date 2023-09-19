@@ -32,8 +32,14 @@
           <v-card-text>
             
             <div >
-              <EditableTable v-if="timeSheetData.length === 0 || timeSheetData[0].isSubmited === 0" v-bind:timeSheetData="timeSheetData"/>
-              <NonEditableTable v-else v-bind:timeSheetData="timeSheetData" />
+              <div v-if="timeSheetObj === undefined" class="create-sheet-card d-flex flex-row align-center justify-center" >
+                <v-btn color="#a83299" @click="createSheet" :loading="createSheetLoading">
+                  Create Sheet
+                </v-btn>
+              </div>
+            
+              <EditableTable v-else-if="timeSheetObj.status === 'open'" v-bind:timeSheetObj="timeSheetObj"/>
+              <NonEditableTable v-else v-bind:timeSheetObj="timeSheetObj" />
             </div>
           
 
@@ -47,14 +53,7 @@
             >
               Cancel
             </v-btn>
-            <v-btn
-              color="blue-darken-1"
-              variant="text"
-              @click="dialog = false"
-              v-bind:disabled="timeSheetData.length === 0 || timeSheetData[0].isSubmited === 1"
-            >
-              Submit
-            </v-btn>
+            
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -75,8 +74,9 @@
 
       data: () => ({
         dialog: false,
+        createSheetLoading:false,
         calendarValue:"",
-        timeSheetData:[],
+        timeSheetObj:undefined,
       }),
 
       components:{
@@ -102,8 +102,8 @@
 
         async getTimeSheet(){
           
-            const url = `http://localhost:8001/timesheet/?employee_id=${this.employeeId}&&start_date=${this.startDate}&&end_date=${this.endDate}`
-            
+            const url = `http://localhost:8001/timesheet/employee/${this.employeeId}?start_date=${this.startDate}&&end_date=${this.endDate}`
+          
             const options = {
               method:"GET",
               headers:{
@@ -114,12 +114,52 @@
             const response = await fetch(url, options) ;
 
             if(response.ok){
-              const data = await response.json() ;
-              console.log(data);
-              this.timeSheetData = data ;
-            }
-        }
+              const jsonData = await response.json() ;
 
+              this.timeSheetObj = jsonData.data ;
+              
+            }
+        },
+
+        async createSheet(){
+
+          this.createSheetLoading = true ;
+
+          const url = "http://localhost:8001/timesheet/create"
+          const body = {
+            employeeId:this.employeeId,
+            week:this.calendarValue,
+            startDate:this.startDate,
+            endDate:this.endDate
+          }
+
+          const options = {
+            method:"POST",
+            headers:{
+              'Content-Type':"application/json",
+              "Accept":"application/json"
+            },
+            body:JSON.stringify(body)
+          }
+
+          const response = await fetch(url, options) ;
+          
+          if(response.ok){
+            const jsonData = await response.json() ;
+            console.log(jsonData.timeSheetId) ;
+                        
+            this.timeSheetObj = {
+              timeSheetId:jsonData.timeSheetId,
+              week:this.calendarValue,
+              status:'open'
+            }
+
+            
+          }
+
+          this.createSheetLoading = false;
+        }
+        
       },
 
       created(){
@@ -149,9 +189,6 @@
       mounted(){
         this.getTimeSheet()
       },
-
-      
-
     }
   </script>
 
@@ -162,6 +199,10 @@
       padding-left:5px;
       padding-right:5px;
       font-size:15px;
+    }
+
+    .create-sheet-card{
+      height:200px;
     }
 
   </style>

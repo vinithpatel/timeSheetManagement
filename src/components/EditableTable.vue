@@ -1,12 +1,58 @@
 <template>
-    <v-container>
-        <v-row>
+    <div>
+        <div class="w-100 d-flex flex-row align-center justify-end">
+            <v-btn v-if="!isSaved && !isMoreEightHours" color="primary" class="mr-2" @click="onClickSave" :loading="saveLodaing">
+                Save
+            </v-btn>
+
+            <v-dialog 
+                v-model="dialog"
+                persistent
+                width="auto"
+            >
+            <template v-slot:activator="{ props }">
+                <v-btn
+                variant="outlined" 
+                color="#b93bd9"
+                v-bind="props"
+                >
+                    Review and Submit
+                </v-btn>
+            </template>
+                <v-card>
+                    <v-card-title class="text-h5">
+                        <div class="d-flex flex-row justify-space-between">
+                            <span class="text-h7">TimeSheet ID : {{ sheetObj.timeSheetId }}</span>
+                            
+                            <span class="text-h9">Employee ID: {{ employeeId }}</span>
+                        </div>
+                    </v-card-title>
+                    <v-card-text>
+                        <ReviewTable v-bind:weekData="timeSheetList" />
+                    </v-card-text>
+                    <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn variant="text" @click="dialog = false" color="#454df5">
+                            Cancel
+                        </v-btn>
+                        <v-btn variant="outlined" color="#b93bd9" :loading="submitLoading" @click="onClickSubmit">
+                            Submit
+                        </v-btn>
+                    </v-card-actions>
+                </v-card>
+      
+            </v-dialog>
+
+        </div>
+    <v-container >
+        <v-row >
             <v-table >
                 <thead>
                 <tr>
-                    <th class="text-left" width="250px">
-                    Projects
+                    <th class="text-left" width="250px" >
+                         Projects
                     </th>
+                    
                     <th style="font-size:13px;" class="text-left" v-for="dateFormat in $store.state.daysOfWeek" v-bind:key="dateFormat">
                         {{dateFormat}}
                     </th>
@@ -19,85 +65,83 @@
                 <tbody >
                     <tr
                     v-for="rowObj in timeSheetList"
-                    :key="rowObj.projectId"
+                    :key="rowObj.id"
                     >
-                    <td>
-                        <div class="mt-6 mb-6">        
-                            <select
-                                class="projects-list-input-select"
-                                v-bind:value="rowObj.projectName"
-                                
-                            >
-                            <option value="" disabled selected hidden>Select Project ▼</option>
-                                <option 
-                                    v-for="option in projectList" 
-                                    v-bind:key="option"
-                                    v-bind:value="option"
-                                >
-                                    {{ option }}
-                                </option>
-                            </select>
+                    <td >
+                        <div class="mt-6 mb-6" >
+                            <v-select
+                            label="Select Project"
+                            :items="projectList"
+                            item-title="projectName"
+                            item-value="projectId"
+                            variant="outlined"
+                            :model-value="rowObj.projectId"
+                            hide-details
+                            @update:model-value="setRowValue($event,{rowId:rowObj.id, name:'projectId'})"
+                            
+                            ></v-select> 
                         </div>
                     </td>
-                    <td class="text-center" >
+                    <td class="text-center pa-1" >
                         <v-text-field  variant="outlined" density="comfortable" hide-details
-                        @input = "restrictChar($event,{id:rowObj.projectId,name:'monday'})"
+                        @input = "restrictChar($event,{rowId:rowObj.id,name:'monday'})"
                         v-bind:model-value="rowObj.monday"
+                        type="number"
                         v-bind:v-model="rowObj.monday"
-                        maxlength="3"
+                        
                         >
                         
                         </v-text-field>
                     </td>
-                    <td class="text-center">
+                    <td class="text-center pa-1">
                         <v-text-field  variant="outlined" density="comfortable" hide-details
-                        @input = "restrictChar($event,{id:rowObj.projectId,name:'tuesday'})"
+                        @input = "restrictChar($event,{rowId:rowObj.id,name:'tuesday'})"
                         v-bind:model-value="rowObj.tuesday"
-                        maxlength="3"
+                        type="number"
                         >
                         </v-text-field>
                     </td>
-                    <td class="text-center">
+                    <td class="text-center pa-1">
                         <v-text-field  variant="outlined" density="comfortable" hide-details
-                        @input = "restrictChar($event,{id:rowObj.projectId,name:'wednesday'})"
+                        @input = "restrictChar($event,{rowId:rowObj.id,name:'wednesday'})"
                         v-bind:model-value="rowObj.wednesday"
-                        maxlength="3"
+                        type="number"
                         >
                         </v-text-field>
                     </td>
-                    <td class="text-center">
+                    <td class="text-center pa-1">
                         <v-text-field  variant="outlined" density="comfortable" hide-details
                         
-                        @input = "restrictChar($event,{id:rowObj.projectId,name:'thursday'})"
+                        @input = "restrictChar($event,{rowId:rowObj.id,name:'thursday'})"
                         v-bind:model-value="rowObj.thursday"
-                        maxlength="3"
+                        type="number"
                         >
                         </v-text-field>
                     </td>
-                    <td class="text-center">
+                    <td class="text-center pa-1">
                         <v-text-field  variant="outlined" density="comfortable" hide-details
                         
-                        @input = "restrictChar($event,{id:rowObj.projectId,name:'friday'})"
+                        @input = "restrictChar($event,{rowId:rowObj.id,name:'friday'})"
                         v-bind:model-value="rowObj.friday"
-                        maxlength="3"
+                        type="number"
                         >
                         </v-text-field>
                     </td>
-                    <td class="text-center">
+                    <td class="text-center pa-1">
                         <v-text-field  variant="outlined" density="comfortable" hide-details
                         
-                        @input = "restrictChar($event,{id:rowObj.projectId,name:'satuarday'})"
+                        @input = "restrictChar($event,{rowId:rowObj.id,name:'satuarday'})"
                         v-bind:model-value="rowObj.satuarday"
-                        maxlength="3"
+                        type="number"
                         >
                         </v-text-field>
                     </td>
-                    <td class="text-center">
+                    <td class="text-center pa-1">
                         <v-text-field  variant="outlined" density="comfortable" hide-details
                         
-                        @input = "restrictChar($event,{id:rowObj.projectId,name:'sunday'})"
+                        @input = "restrictChar($event,{rowId:rowObj.id,name:'sunday'})"
                         v-bind:model-value="rowObj.sunday"
-                        maxlength="3"
+                        type="number"
                         >
                         </v-text-field>
                     </td>
@@ -106,7 +150,37 @@
                             {{ totalHoursOnProject(rowObj) }}
                         </p>
                     </td>
-                    <td>
+
+                    <td class="pa-0">
+                        <v-dialog width="500">
+                            <template v-slot:activator="{ props }">
+                                <v-btn v-bind="props" variant="text" icon="mdi-comment" size="small"></v-btn>
+                            </template>
+
+                            <template v-slot:default="{ isActive }">
+                                <v-card title="Add Comment">
+                                <v-textarea 
+                                variant="outlined" 
+                                :model-value="rowObj.comment" 
+                                @input = "setRowValue($event.target.value,{rowId:rowObj.id,name:'comment'})">
+                                    
+                                </v-textarea>
+
+                                <v-card-actions>
+                                    <v-spacer></v-spacer>
+
+                                    <v-btn
+                                    text="Save Changes"
+                                    @click="isActive.value = false"
+                                    color="#4287f5"
+                                    ></v-btn>
+                                </v-card-actions>
+                                </v-card>
+                            </template>
+                        </v-dialog>
+                    </td>
+
+                    <td class="pa-0">
                         <v-btn icon="mdi-close" variant="text" size="small" @click="onClickDelete(rowObj.projectId)" >
                         
                         </v-btn>
@@ -147,44 +221,62 @@
                 </tbody>
             </v-table>
         </v-row>
-        <v-btn color="#0047ba" prepend-icon="mdi-plus" @click="addNewRow">
+        <div class="mt-4 d-flex flex-row align-center justify-space-between">
+            <v-btn color="#0047ba" prepend-icon="mdi-plus" @click="addNewRow">
                   New Row
-        </v-btn>
+            </v-btn>
+            <p v-if="isMoreEightHours" style="color:red ;" class="error-message">Error:Maxmium 8 hours per day allowed</p>
+            <p v-else class="error-message">*Maxmium 8 hours per day allowed</p>
+        </div>
+        
     </v-container>
+</div>
 </template>
 
 <script>
     import {v4 as uuidV4} from "uuid";
     import {mapState} from "vuex"
+    import ReviewTable from "./ReviewTable.vue";
+
 
     export default({
         data(){
             return (
                 {
-                    selectValue:"",
-                    projectList:"",
-                    timeSheetList: this.timeSheetData,
+                    dialog:false,
+                    sheetObj:this.timeSheetObj,
+                    saveLodaing:false ,
+                    isSaved: true ,
+                    projectList:[],
+                    timeSheetList:[],
+                    isMoreEightHours:false,
+                    submitLoading:false ,
                 }
             )
         },
 
         props:[
-            'timeSheetData'
+            'timeSheetObj'
         ],
 
         watch:{
-            timeSheetData(newValue){
-                this.timeSheetList = newValue ;
+            timeSheetObj(newValue){
+                this.sheetObj = newValue ;
+                this.getTimeSheetData()
             }
         },
 
+        components:{
+            ReviewTable,
+        },
+    
         computed:{
             ...mapState([
                 'employeeId','selectedWeek','weeklyProjectHoursList'
             ]),
 
             getTotal(){
-                const list = this.timeSheetData ;
+                const list = this.timeSheetList ;
 
                 let totalHours = 0 ;
                 list.forEach((eachObj)=>{
@@ -192,31 +284,62 @@
                 })
 
                 return totalHours.toFixed(1)
-            }
+            },
         },
 
         methods:{
+            checkDropDown(obj){
+
+                console.log(obj.rowId, obj.name) ;
+                console.log(this.selectValue) ;
+
+            },
 
             restrictChar(event, data){
                 
-                let value = event.target.value ;                
-
-                const lastChar = value.charAt(value.length-1)
-                
-
-                if((lastChar > '9' || lastChar < '1') && lastChar !== '.'){
-                    event.target.value = value.slice(0, value.length -1);
+                let value = event.target.value ;
+          
+                if(parseFloat(value) > 8 || parseFloat(value) < 0){
+            
+                    event.target.value = null;
+                    value = null
                 }
-                else if(parseFloat(value) > 8){
-                
-                    event.target.value = "";
-                }
-                else{
-                    value = isNaN(parseFloat(value)) ? null : parseFloat(parseFloat(value).toFixed(1)) ;
-                    this.updateRowInput({...data, value}) ;
+               
+                value = isNaN(parseFloat(value)) ? null : parseFloat(parseFloat(value).toFixed(1)) ;
+
+                if(this.isTotalMoreThanEight(value,data)){
+                    this.isMoreEightHours = true ;
+                    event.target.value = null;
+                    value = null ;
+                }else{
+                    this.isMoreEightHours = false ;
+                    
                 }
 
-                
+                this.setRowValue(value, data) ;
+            },
+
+            isTotalMoreThanEight(value,data){
+                const {rowId, name} = data ;
+
+                const copyOfList = this.timeSheetList.map((eachObj) => {
+                    if(eachObj.id === rowId){
+                        const newObj = {...eachObj}
+                        newObj[name] = value;
+                        return newObj ;
+                    }
+
+                    return {...eachObj}
+                })
+
+                let totalHours = 0 ;
+
+                copyOfList.forEach(eachObj => {
+                    totalHours += eachObj[name]
+                })
+
+                return totalHours > 8 ;
+
             },
 
             getTotalHoursOfDay(dayName){
@@ -229,13 +352,13 @@
                 })
 
                 return totalHours.toFixed(1)
-
                 
             },
 
             addNewRow(){
                 const newRow = {
-                    projectId:uuidV4(),
+                    id:uuidV4(),
+                    projectId:null,
                     projectName:null,
                     monday:null,
                     tuesday:null,
@@ -245,34 +368,31 @@
                     satuarday:null,
                     sunday:null,
                     total:null,
+                    comment:null,
                 }
 
                 this.timeSheetList = [...this.timeSheetList, newRow] ;
                 //this.$store.dispatch('createNewRow')
             },
 
-            updateRowInput(data){
-            
-                const {id, name, value} = data ;
-                
 
-            const updatedList = this.timeSheetList.map(eachObj => {
-                console.log(eachObj.projectId) ;
-                console.log(id) ;
-                
-                if(eachObj.projectId === id){
-                    const requiredObj = {...eachObj} ;
-                    requiredObj[name] = value 
+            setRowValue(value, obj){
+                const {rowId, name} = obj ;
 
-                    return requiredObj
+                console.log(value) ;
+                console.log(obj) ;
+                
+                const row = this.timeSheetList.find((each) => each.id === rowId)
+
+                if(row){
+                    row[name] = value ;
                 }
-                return eachObj
-            })
-            this.timeSheetList = updatedList;
+
+                this.isSaved = false ;
+                
+            },
 
             
-        },
-
         totalHoursOnProject(rowObj){     
 
             const total = (rowObj.monday+rowObj.tuesday+rowObj.wednesday+rowObj.thursday+rowObj.friday+rowObj.satuarday+rowObj.sunday)
@@ -287,49 +407,7 @@
             this.timeSheetList = updatedList ;
         },
 
-            /*
-
-            setProject(event, obj){
-                const {id, name} = obj ;
-                const value = event.target.value
-
-                this.$store.dispatch('updateRowInput', {
-                    id, 
-                    name,
-                    value,
-                })
-            },
-
-            
-
-            setValue(event, obj){
-                console.log(event.target.value = "0") ;
-                console.log(obj) ;
-                 
-                const {id, name} = obj ;
-                console.log(event.target.value) ;
-
-                
-
-                if(this.getTotalHoursOfDay(name) > 8){
-                    this.$store.dispatch('updateRowInput', {
-                    id, 
-                    name,
-                    value:null,
-                })
-                }
-
-                
-            },
-            
-
-            onClickDeleteRow(rowId){
-                this.$store.dispatch('deleteRow', rowId)
-            },
-
-            */
-
-            async getProjectData(){
+        async getProjectData(){
                 const url = `http://localhost:8001/projects/${this.employeeId}`;
 
                 const options = {
@@ -345,12 +423,88 @@
                     const data = await response.json() ;
                     this.projectList = data ;
                 }
+            },
+
+            async getTimeSheetData(){
+                const url = `http://localhost:8001/timesheet/${this.sheetObj.timeSheetId}` ;
+                const options = {
+                    method:"GET",
+                    headers:{
+                        'Content-Type':'application/json',
+                    }
+                }
+
+                const response = await fetch(url, options) ;
+
+                
+
+                if(response.ok){
+                    const data = await response.json() ;
+                    this.timeSheetList = data ;
+
+                    if(this.timeSheetList.length === 0){
+                        this.addNewRow()
+                        
+                    }
+                }
+            },
+
+            async onClickSave(){
+                this.saveLodaing = true;
+
+
+                const url = `http://localhost:8001/timesheet/save/${this.sheetObj.timeSheetId}`
+
+                const options = {
+                    method:"PUT",
+                    headers:{
+                        'Content-Type':"application/json",
+                        'Accept':"application/json",
+                    },
+
+                    body:JSON.stringify({arr:this.timeSheetList}) 
+                }
+
+                const response = await fetch(url, options)
+
+                if(response.ok){
+                    const data = await response.json()
+                    console.log(data.text) ;
+                }
+
+                this.saveLodaing = false
+                this.isSaved = true ;
+            },
+
+            async onClickSubmit(){
+                this.submitLoading = true ;
+
+                const url = `http://localhost:8001/timesheet/submit/${this.sheetObj.timeSheetId}`
+                const options = {
+                    method:"PUT",
+                    headers:{
+                        'Content-Type':"application/json",
+                        'Accept':"application/json"
+                    }
+                }
+
+                const response = await fetch(url, options) ;
+
+                if(response.ok){
+                    const data = await response.json() ;
+                    console.log(data.text) ;
+                    this.dialog = false ;
+                }
+
+                this.submitLoading = false;
+                
             }
 
         },
 
         mounted(){
-            this.getProjectData()
+            this.getProjectData() ;
+            this.getTimeSheetData() ;
         }
     })
 </script>
@@ -362,5 +516,8 @@
         padding:5px;
         border-radius:5px;
         outline:none;
+    }
+    .error-message{
+        font-size:12px;
     }
 </style>

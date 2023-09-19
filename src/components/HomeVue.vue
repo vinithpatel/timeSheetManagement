@@ -29,12 +29,22 @@
                                     <TimeSheet /> 
                                 </v-list-item-title>
                                 </v-list-item>
+
+                                <v-list-item
+                                >
+                                    <v-list-item-title>
+                                        <SearchTimeSheet />
+                                    </v-list-item-title>
+                                </v-list-item>
+
                                 <v-list-item
                                 >
                                     <v-list-item-title>
                                         <EmployeeTimeSheet />
                                     </v-list-item-title>
                                 </v-list-item>
+
+
                             </v-list>
                         </v-menu>
                         
@@ -56,12 +66,14 @@
 
 <script>
     import TimeSheet from "./TimeSheet.vue"
-    import EmployeeTimeSheet from "./EmployeeTimeSheet.vue";
+    import SearchTimeSheet from "./SearchTimesheet.vue" ;
+    import EmployeeTimeSheet from "./EmployeeTimesheet.vue" 
+   
 
     export default({
         
         components:{
-            TimeSheet,EmployeeTimeSheet
+            TimeSheet,SearchTimeSheet, EmployeeTimeSheet
         },
 
         

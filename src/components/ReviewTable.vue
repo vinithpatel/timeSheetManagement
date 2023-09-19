@@ -98,21 +98,18 @@
         data(){
             return (
                 {
-                    selectValue:"",
-                    timeSheetList: [],
-                    sheetObj:this.timeSheetObj,
+                    timeSheetList: this.weekData,
                 }
             )
         },
 
         props:[
-            'timeSheetObj'
+            'weekData'
         ],
 
         watch:{
-            timeSheetObj(newValue){
-                this.sheetObj = newValue ;
-                this.getTimeSheetData() ;
+            weekData(newValue){
+                this.timeSheetList = newValue ;
             }
         },
 
@@ -142,48 +139,8 @@
                 })
 
                 return totalHours.toFixed(1)
-
-                
+              
             },
-
-            async getTimeSheetData(){
-                const url = `http://localhost:8001/timesheet/${this.sheetObj.timeSheetId}` ;
-                const options = {
-                    method:"GET",
-                    headers:{
-                        'Content-Type':'application/json',
-                    }
-                }
-
-                const response = await fetch(url, options) ;
-
-                
-
-                if(response.ok){
-                    const data = await response.json() ;
-                    this.timeSheetList = data ;
-
-
-                    if(this.timeSheetList.length === 0){
-                        this.addNewRow()
-                        
-                    }
-                }
-            },
-        },
-        
-        mounted(){
-            this.getTimeSheetData() ;
         }
     })
 </script>
-
-<style scoped>
-    .projects-list-input-select{
-        width:200px;
-        border:1px solid #cbced4;
-        padding:5px;
-        border-radius:5px;
-        outline:none;
-    }
-</style>
