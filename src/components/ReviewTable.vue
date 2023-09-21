@@ -5,7 +5,7 @@
                 <thead>
                 <tr>
                     <th class="text-left" width="250px">
-                    Projects
+                        Projects
                     </th>
                     <th style="font-size:13px;" class="text-left" v-for="dateFormat in $store.state.daysOfWeek" v-bind:key="dateFormat">
                         {{dateFormat}}
@@ -23,7 +23,7 @@
                     >
                     <td>
                         <div class="mt-6 mb-6">        
-                            <p>{{ rowObj.projectName }}</p>
+                            <p>{{ getProjectName(rowObj.projectId) }}</p>
                         </div>
                     </td>
                     <td class="text-center" >
@@ -50,8 +50,8 @@
                     </td>
                     <td class="text-center">
                         <p>
-                            {{ rowObj.total }}
-                        </p>
+                            {{ totalHoursOnProject(rowObj) }}
+                        </p> 
                     </td>
                 </tr>
                 <tr
@@ -93,6 +93,7 @@
 </template>
 
 <script>
+    import {mapState} from "vuex" 
 
     export default({
         data(){
@@ -114,17 +115,20 @@
         },
 
         computed:{
+            ...mapState(['projectList']),
 
             getTotal(){
-                const list = this.timeSheetList;
+                const list = this.timeSheetList ;
 
                 let totalHours = 0 ;
                 list.forEach((eachObj)=>{
-                    totalHours += eachObj['total'] ;
+                    totalHours += eachObj.monday+eachObj.tuesday+eachObj.wednesday+eachObj.thursday+eachObj.friday+eachObj.satuarday+eachObj.sunday ;
                 })
 
                 return totalHours.toFixed(1)
-            }
+            },
+
+            
         },
 
         methods:{
@@ -141,6 +145,20 @@
                 return totalHours.toFixed(1)
               
             },
+
+            totalHoursOnProject(rowObj){     
+
+            const total = (rowObj.monday+rowObj.tuesday+rowObj.wednesday+rowObj.thursday+rowObj.friday+rowObj.satuarday+rowObj.sunday)
+
+            return total.toFixed(1) ;
+            },
+
+            getProjectName(projectId){
+                
+                const obj = this.projectList.find((each) => each.projectId === projectId) ;
+           
+                return obj.projectName ;
+            }
         }
     })
 </script>

@@ -52,14 +52,29 @@
                 </div>
             </v-col>
             
+            <v-col cols="12" md="3">
+              <v-select                   
+                    :items="statusOptions"
+                    item-title="title"
+                    item-value="value"
+                    density="compact"
+                    variant="outlined"
+                    placeholder="Status"
+                    hide-details
+                    v-model="status"
+                    @update:modelValue="onupdateInput"
+                  ></v-select>
+            </v-col>
 
-            <v-col cols="12" md="6" v-if="timePeriod === 'customDate'">   
+            <v-col cols="12" md="12" v-if="timePeriod === 'customDate'">   
               <div class="d-flex flex-row align-center">
                   <DateRange v-on:updateDateRange="updateDateRange" />
                   <v-btn variant="text" icon="mdi mdi-magnify" class="mt-7" @click="onupdateInput">
                   </v-btn>
               </div>
             </v-col>
+
+            
             </v-row>
           </v-card-title>
 
@@ -98,7 +113,7 @@
                     <td>{{ item.employeeId}}</td>
                     <td>{{ item.employeeName }}</td>
                     <td>
-                        <WeekSheet :title="item.week" :timeSheet="item" />
+                        <WeekSheet :title="item.week" :timeSheet="item" @getTimeSheets="getTimeSheets" />
                     </td>
                     <td class="text-center">{{ item.logHours }}</td>
                     <td class="text-center" >
@@ -142,17 +157,30 @@
       data: () => ({
         dialog: false,
         loading:false,
-        
+        status:"",
 
         dateRange:{
           startDate:new Date() ,
           endDate:new Date(),
         },
 
-        searchByOptions:[
-          {value:"id", title:"Employee Id"},
-          {value:"name",title:"Employee Name"} 
-        ] ,
+        statusOptions:[
+        {
+          title:"All", value:""
+        },
+        {
+          title:"Open", value:"open"
+        },
+        {
+          title:"Submited", value:"submited"
+        },
+        {
+          title:"Approved", value:"approved"
+        },
+        {
+          title:"Denied", value:"denied"
+        }
+      ],
         
         
         timePeriodOptions:[
@@ -243,7 +271,7 @@
           
           const {startDate, endDate} = this.getStartAndEndDate()
 
-          const url=`http://localhost:8001/timesheets?employee_id=${this.employeeId}&&start_date=${startDate}&&end_date=${endDate}` ;
+          const url=`http://localhost:8001/timesheets?employee_id=${this.employeeId}&&start_date=${startDate}&&end_date=${endDate}&&status=${this.status}` ;
 
           const options = {
             method:"GET",

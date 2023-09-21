@@ -1,6 +1,7 @@
 import {createStore} from "vuex" 
 import {startOfWeek, addDays, format, addWeeks} from "date-fns" ;
 import {v4 as uuidV4} from "uuid";
+import emailjs from 'emailjs-com' ;
 
 import router from "../router.js" ;
 
@@ -8,12 +9,15 @@ import router from "../router.js" ;
 export default createStore({
     state:{
         employeeId:1001,
+        employeeName:'',
+        email:'',
+        isAdmin:false ,
         isLogin:false,
         daysOfWeek:[],
         selectedWeek:'2023-W36',
         startDate:"",        //format '2023-10-31'
         endDate:"",          //format '2023-10-31'
-        dayHoursError: false ,
+        projectList:[],
 
         weeklyProjectHoursList:{
             '2023-W36':[
@@ -50,8 +54,13 @@ export default createStore({
             state.isLogin = !state.isLogin ;
         },
 
-        updateEmployeeId(state, id){
-            state.employeeId = id;
+        updateEmployeeDetails(state, obj){
+            state.employeeId = obj.employeeId ;
+            state.employeeName = obj.employeeName ;
+            state.email = obj.email ;
+            state.isAdmin = obj.isAdmin ;
+
+            console.log(obj) ;
         },
 
         updateDaysOfWeek(state){
@@ -171,13 +180,119 @@ export default createStore({
             
         },
 
-        deleteRow(store, rowId){
-            store.commit('deleteRow',rowId )
-        },
-
         onLogout(store){
             store.commit('onLogout') ;
             router.push('/login') ;
+        },
+
+        async getProjectData(store){
+            const url = `http://localhost:8001/projects/${store.state.employeeId}`;
+
+            const options = {
+                method:"GET",
+                headers:{
+                    'Content-Type':'application/json',
+                },
+            }
+
+            const response = await fetch(url,options)
+            
+            if(response.ok){
+                const data = await response.json() ;
+                store.state.projectList = data ;
+                console.log(store.state.projectList) ;
+            }
+        },
+
+
+
+        async approveTimeSheet(store, timeSheetId){
+            const url = `http://localhost:8001/timesheet/approve/${timeSheetId}` 
+            const options = {
+                method:"PUT",
+                headers:{
+                    'Content-Type':'application/json'
+                }
+            }
+
+            const response = await fetch(url, options) ;
+
+            if(response.ok){
+                const data = await response.json() ;
+                console.log(data) ;
+            }
+        },
+
+        async submitTimeSheet(store, timeSheetId){
+            const url = `http://localhost:8001/timesheet/submit/${timeSheetId}`
+
+            const options = {
+                method:"PUT",
+                headers:{
+                    'Content-Type':'application/json',
+                    'Accept':"application/json"
+                }
+            }
+
+            const response = await fetch(url, options) ;
+
+            if(response.ok){
+                const data = await response.json() ;
+                console.log(data.text) ;
+            }
+        },
+
+        async denyTimeSheet(store, timeSheetId){
+            const url = `http://localhost:8001/timesheet/deny/${timeSheetId}` 
+            const options = {
+                method:"PUT",
+                headers:{
+                    'Content-Type':'application/json'
+                }
+            }
+
+            const response = await fetch(url, options) ;
+
+            if(response.ok){
+                const data = await response.json() ;
+                console.log(data) ;
+            }
+        },
+
+        async openTimeSheet(store, timeSheetId){
+            const url = `http://localhost:8001/timesheet/open/${timeSheetId}` 
+            const options = {
+                method:"PUT",
+                headers:{
+                    'Content-Type':'application/json'
+                }
+            }
+
+            const response = await fetch(url, options) ;
+
+            if(response.ok){
+                const data = await response.json() ;
+                console.log(data) ;
+            }
+        },
+
+        async sendEmail(store, obj){
+
+            const {timeSheetId, startDate, endDate} = obj ;
+
+            try{
+                await emailjs.send('service_evxhn1b','template_vcdvhmt',
+                {
+                    employeeName: store.state.employeeName,
+                    employeeId:store.state.employeeId,
+                    timesheetId:timeSheetId,
+                    startDate,
+                    endDate
+
+                }, '75B7CIXrKgR0C1weF')
+            }catch(error){
+                console.log(error) ;
+            }
         }
     },
 

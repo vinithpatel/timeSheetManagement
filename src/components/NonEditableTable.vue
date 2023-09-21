@@ -119,15 +119,17 @@
         computed:{
 
             getTotal(){
-                const list = this.timeSheetList;
+               
+                const list = this.timeSheetList ;
 
                 let totalHours = 0 ;
                 list.forEach((eachObj)=>{
-                    totalHours += eachObj['total'] ;
+                    totalHours += eachObj.monday+eachObj.tuesday+eachObj.wednesday+eachObj.thursday+eachObj.friday+eachObj.satuarday+eachObj.sunday ;
                 })
 
                 return totalHours.toFixed(1)
-            }
+            },
+            
         },
 
         methods:{
@@ -162,11 +164,11 @@
                 if(response.ok){
                     const data = await response.json() ;
                     this.timeSheetList = data ;
+                    console.log(this.timeSheetList) ;
 
 
                     if(this.timeSheetList.length === 0){
-                        this.addNewRow()
-                        
+                        this.addNewRow()   
                     }
                 }
             },

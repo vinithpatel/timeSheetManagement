@@ -126,7 +126,7 @@
             const data = await response.json() ;
 
             if(response.ok){
-                this.$store.commit('updateEmployeeId', data.employeeId) ;
+                this.$store.commit('updateEmployeeDetails', data) ;
                 router.push("/")
             }
             else{

@@ -28,27 +28,61 @@
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
+
             <v-btn
-              color="blue-darken-1"
-              variant="text"
-              @click="dialog = false"
-            >
-              Close
+                color="blue-darken-1"
+                variant="text"
+                @click="dialog = false"
+                >
+                  Cancel
             </v-btn>
+
+            <div v-if="isAdmin && timeSheet.status === 'submited'">
+                <v-btn variant="outlined" color="warning" @click="onClickOpen" :loading="openLoading">
+                    Re-Open
+                </v-btn>
+                <v-btn variant="outlined" color="red" @click="onClickDeny" :loading="denyLoading" >
+                    Deny
+                </v-btn>
+
+                <v-btn variant="outlined" color="green" @click="onClickApprove()" :loading="approveLoading" >
+                  Approve
+                </v-btn>
+            </div>
+
+            <div v-if="!isAdmin && timeSheet.status === 'open'" >
+                <v-btn variant="outlined" color="green" @click="onClickSubmit" :loading="submitLoading" >
+                  Submit
+                </v-btn>
+            </div>
+           
           </v-card-actions>
         </v-card>
       </v-dialog>
     </v-row>
   </template>
+
   <script>
+    import {mapState} from "vuex" ;
     import NonEditableTable from "./NonEditableTable.vue"
 
     export default {
       data: () => ({
         dialog: false,
         isLoading:false,
+        submitLoading:false,
+        approveLoading:false,
+        denyLoading:false,
+        openLoading:false,
         weekData:[],
       }),
+
+      computed:{
+        ...mapState([
+          'employeeId', 'employeeName', 'isAdmin'
+        ]),
+
+      },
 
       components:{
         NonEditableTable,
@@ -57,6 +91,60 @@
       props:[
         'title', 'timeSheet'
       ],
+
+      methods:{
+        async onClickApprove(){
+
+            this.approveLoading = true ;
+               
+               await this.$store.dispatch('approveTimeSheet', this.timeSheet.timeSheetId) ;
+               this.$emit('getTimeSheets') ;
+               this.dialog = false ;
+
+            this.approveLoading = false ;
+            this.dialog = false ;
+        },
+
+        async onClickSubmit(){
+
+              this.submitLoading = true ;
+
+                await this.$store.dispatch('submitTimeSheet', this.timeSheet.timeSheetId) ;       
+                await this.$store.dispatch('sendEmail', 
+                    {
+                        timeSheetId:this.timeSheet.timeSheetId,
+                        startDate:this.timeSheet.startDate,
+                        endDate:this.timeSheet.endDate ,
+                    }  
+                ) ;
+
+                this.$emit('getTimeSheets') ;
+
+                this.submitLoading = false ;
+                this.dialog = false ;
+                
+        },
+
+        async onClickOpen(){
+            this.openLoading = true ;
+
+            await this.$store.dispatch('openTimeSheet', this.timeSheet.timeSheetId) ;       
+            this.$emit('getTimeSheets') ;
+
+            this.openLoading = false ;
+            this.dialog = false ;
+        },
+
+        async onClickDeny(){
+            this.denyLoading = true ;
+
+            await this.$store.dispatch('denyTimeSheet', this.timeSheet.timeSheetId) ;       
+            this.$emit('getTimeSheets') ;
+
+            this.denyLoading = false ;
+            this.dialog = false ;
+        }
+      }
 
     }
   </script>

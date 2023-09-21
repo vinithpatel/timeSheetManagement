@@ -12,6 +12,7 @@
     "core-js": "^3.8.3",
     "date-fns": "^2.30.0",
     "daypilot-pro-vue": "https://npm.daypilot.org/daypilot-pro-vue/trial/2023.3.5716.tar.gz",
+    "emailjs-com": "^3.2.0",
     "roboto-fontface": "*",
     "uuid": "^9.0.0",
     "vue": "^3.2.13",

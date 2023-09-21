@@ -38,7 +38,7 @@
                 </v-btn>
               </div>
             
-              <EditableTable v-else-if="timeSheetObj.status === 'open'" v-bind:timeSheetObj="timeSheetObj"/>
+              <EditableTable v-else-if="timeSheetObj.status === 'open'" v-bind:timeSheetObj="timeSheetObj" @getTimeSheet="getTimeSheet"/>
               <NonEditableTable v-else v-bind:timeSheetObj="timeSheetObj" />
             </div>
           

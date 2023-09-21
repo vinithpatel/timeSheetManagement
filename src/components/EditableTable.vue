@@ -1,7 +1,9 @@
 <template>
     <div>
         <div class="w-100 d-flex flex-row align-center justify-end">
-            <v-btn v-if="!isSaved && !isMoreEightHours" color="primary" class="mr-2" @click="onClickSave" :loading="saveLodaing">
+            <v-btn 
+                v-if="!isSaved && ! isMoreEightHours && getTotal <=40" 
+                color="primary" class="mr-2" @click="onClickSave" :loading="saveLodaing">
                 Save
             </v-btn>
 
@@ -15,6 +17,7 @@
                 variant="outlined" 
                 color="#b93bd9"
                 v-bind="props"
+                v-bind:disabled="!isSaved || isMoreEightHours || getTotal > 40"
                 >
                     Review and Submit
                 </v-btn>
@@ -56,6 +59,11 @@
                     <th style="font-size:13px;" class="text-left" v-for="dateFormat in $store.state.daysOfWeek" v-bind:key="dateFormat">
                         {{dateFormat}}
                     </th>
+
+                    <th class="pa-0" >
+
+                    </th>
+
                     <th style="font-size:14px; font-weight:bold; color:black;">
                         Total:
                     </th>
@@ -77,8 +85,7 @@
                             variant="outlined"
                             :model-value="rowObj.projectId"
                             hide-details
-                            @update:model-value="setRowValue($event,{rowId:rowObj.id, name:'projectId'})"
-                            
+                            @update:model-value="setRowValue($event,{rowId:rowObj.id, name:'projectId'})"              
                             ></v-select> 
                         </div>
                     </td>
@@ -145,13 +152,8 @@
                         >
                         </v-text-field>
                     </td>
-                    <td class="text-center">
-                        <p>
-                            {{ totalHoursOnProject(rowObj) }}
-                        </p>
-                    </td>
 
-                    <td class="pa-0">
+                    <td class="pa-0 text-center" >
                         <v-dialog width="500">
                             <template v-slot:activator="{ props }">
                                 <v-btn v-bind="props" variant="text" icon="mdi-comment" size="small"></v-btn>
@@ -180,8 +182,16 @@
                         </v-dialog>
                     </td>
 
+                    <td class="text-center">
+                        <p>
+                            {{ totalHoursOnProject(rowObj) }}
+                        </p>
+                    </td>
+
+                    
+
                     <td class="pa-0">
-                        <v-btn icon="mdi-close" variant="text" size="small" @click="onClickDelete(rowObj.projectId)" >
+                        <v-btn icon="mdi-close" variant="text" size="small" @click="onClickDelete(rowObj.id)" >
                         
                         </v-btn>
                     </td>
@@ -193,29 +203,21 @@
                             Total :
                         </p>
                     </td>
-                    <td class="text-center" >
-                        {{ getTotalHoursOfDay('monday') }}
+                    
+                    <td class="text-center" v-for="day in daysList" :key="day" >
+                        <div>
+                            <p :class="getTotalHoursOfDay(day) > 8 ? 'error' : '' ">{{ getTotalHoursOfDay(day) }}</p>
+                            <p v-if="getTotalHoursOfDay(day) > 8" class="error-message error">8 Hours allowed</p>
+                        </div>
                     </td>
-                    <td class="text-center" >
-                        {{ getTotalHoursOfDay('tuesday') }}
+                   
+                    <td>
+                        <!-- empy-->
                     </td>
+
                     <td class="text-center" >
-                        {{ getTotalHoursOfDay('wednesday') }}
-                    </td>
-                    <td class="text-center" >
-                        {{ getTotalHoursOfDay('thursday') }}
-                    </td>
-                    <td class="text-center" >
-                        {{ getTotalHoursOfDay('friday') }}
-                    </td>
-                    <td class="text-center" >
-                        {{ getTotalHoursOfDay('satuarday') }}
-                    </td>
-                    <td class="text-center" >
-                        {{ getTotalHoursOfDay('sunday') }}
-                    </td>
-                    <td class="text-center" >
-                        {{ getTotal}}
+                        <p v-bind:class="getTotal > 40 ? 'error' : ''" >{{ getTotal}}</p>
+                        <p v-if="getTotal > 40" class="error-message error" >40HRS allowed</p>
                     </td>
                 </tr>
                 </tbody>
@@ -225,8 +227,11 @@
             <v-btn color="#0047ba" prepend-icon="mdi-plus" @click="addNewRow">
                   New Row
             </v-btn>
-            <p v-if="isMoreEightHours" style="color:red ;" class="error-message">Error:Maxmium 8 hours per day allowed</p>
-            <p v-else class="error-message">*Maxmium 8 hours per day allowed</p>
+            
+            <div>
+                <p class="error-message">*Maxmium 8 hours per day allowed</p>
+                <p class="error-message">*Maximum 40 hours per week allowed</p>
+            </div>
         </div>
         
     </v-container>
@@ -247,10 +252,9 @@
                     sheetObj:this.timeSheetObj,
                     saveLodaing:false ,
                     isSaved: true ,
-                    projectList:[],
                     timeSheetList:[],
-                    isMoreEightHours:false,
                     submitLoading:false ,
+                    daysList:['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'satuarday', 'sunday'],
                 }
             )
         },
@@ -272,7 +276,7 @@
     
         computed:{
             ...mapState([
-                'employeeId','selectedWeek','weeklyProjectHoursList'
+                'employeeId','employeeName','selectedWeek','projectList'
             ]),
 
             getTotal(){
@@ -280,11 +284,22 @@
 
                 let totalHours = 0 ;
                 list.forEach((eachObj)=>{
-                    totalHours += eachObj['total'] ;
+                    totalHours += eachObj.monday+eachObj.tuesday+eachObj.wednesday+eachObj.thursday+eachObj.friday+eachObj.satuarday+eachObj.sunday ;
                 })
 
                 return totalHours.toFixed(1)
             },
+
+            isMoreEightHours(){
+                for(let day of this.daysList){
+
+                    if(this.getTotalHoursOfDay(day) > 8){
+                        return true ;
+                    }
+                }
+
+                return false ;
+            }
         },
 
         methods:{
@@ -307,6 +322,7 @@
                
                 value = isNaN(parseFloat(value)) ? null : parseFloat(parseFloat(value).toFixed(1)) ;
 
+                /*
                 if(this.isTotalMoreThanEight(value,data)){
                     this.isMoreEightHours = true ;
                     event.target.value = null;
@@ -315,6 +331,7 @@
                     this.isMoreEightHours = false ;
                     
                 }
+                */
 
                 this.setRowValue(value, data) ;
             },
@@ -380,6 +397,8 @@
                 const {rowId, name} = obj ;
 
                 console.log(value) ;
+
+                console.log(value) ;
                 console.log(obj) ;
                 
                 const row = this.timeSheetList.find((each) => each.id === rowId)
@@ -401,29 +420,15 @@
         },
 
         onClickDelete(id){
-            console.log(id) ;
+            this.isSaved = false;
 
-            const updatedList = this.timeSheetList.filter((each) => (each.projectId !== id))
+            const updatedList = this.timeSheetList.filter((each) => (each.id !== id))
             this.timeSheetList = updatedList ;
         },
 
         async getProjectData(){
-                const url = `http://localhost:8001/projects/${this.employeeId}`;
-
-                const options = {
-                    method:"GET",
-                    headers:{
-                        'Content-Type':'application/json',
-                    },
-                }
-
-                const response = await fetch(url,options)
-                
-                if(response.ok){
-                    const data = await response.json() ;
-                    this.projectList = data ;
-                }
-            },
+                this.$store.dispatch('getProjectData') 
+        },
 
             async getTimeSheetData(){
                 const url = `http://localhost:8001/timesheet/${this.sheetObj.timeSheetId}` ;
@@ -435,8 +440,7 @@
                 }
 
                 const response = await fetch(url, options) ;
-
-                
+              
 
                 if(response.ok){
                     const data = await response.json() ;
@@ -451,7 +455,6 @@
 
             async onClickSave(){
                 this.saveLodaing = true;
-
 
                 const url = `http://localhost:8001/timesheet/save/${this.sheetObj.timeSheetId}`
 
@@ -479,26 +482,21 @@
             async onClickSubmit(){
                 this.submitLoading = true ;
 
-                const url = `http://localhost:8001/timesheet/submit/${this.sheetObj.timeSheetId}`
-                const options = {
-                    method:"PUT",
-                    headers:{
-                        'Content-Type':"application/json",
-                        'Accept':"application/json"
+                await this.$store.dispatch('submitTimeSheet', this.sheetObj.timeSheetId) ;  
+                await this.$store.dispatch('sendEmail',
+                     
+                    {
+                        timeSheetId:this.sheetObj.timeSheetId,
+                        startDate:this.sheetObj.startDate,
+                        endDate:this.sheetObj.endDate ,
                     }
-                }
+                ) ;     
 
-                const response = await fetch(url, options) ;
-
-                if(response.ok){
-                    const data = await response.json() ;
-                    console.log(data.text) ;
-                    this.dialog = false ;
-                }
-
+                this.dialog = false ;
                 this.submitLoading = false;
+                this.$emit('getTimeSheet') ;
                 
-            }
+            },
 
         },
 
@@ -518,6 +516,11 @@
         outline:none;
     }
     .error-message{
-        font-size:12px;
+        font-size:10px;
     }
+
+    .error{
+        color:red;
+    }
+
 </style>

@@ -72,6 +72,7 @@
                   <th class="text-center" >
                     Status
                   </th>
+
                 </tr>
               </thead>
 
@@ -159,6 +160,8 @@
                     @update:modelValue="onupdateInput"
                   ></v-select>
                   </th>
+
+                  
                 </tr>
               </thead>
               <tbody>
@@ -170,14 +173,17 @@
                   <td>{{ item.employeeId}}</td>
                   <td>{{ item.employeeName }}</td>
                   <td class="text-center">
-                      <WeekSheet :title="item.week" :timeSheet="item" />
+                      <WeekSheet :title="item.week" :timeSheet="item" @getTimeSheets="getTimeSheets" />
                   </td>
                   <td class="text-center">{{ item.logHours }}</td>
                   
                   <td class="text-center">
                     {{ item.status }}
-                  </td>
+                  </td>                  
+
+                  
                 </tr>
+
               </tbody>
             </v-table>
         </v-card-text>
@@ -382,7 +388,9 @@ import WeekSheet from "./WeekSheet.vue" ;
 
       updateDateRange(data){
         this.dateRange = data ;
-      }
+      },
+
+      
     },
 
     mounted(){
