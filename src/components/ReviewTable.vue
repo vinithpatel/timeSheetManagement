@@ -10,6 +10,9 @@
                     <th style="font-size:13px;" class="text-left" v-for="dateFormat in $store.state.daysOfWeek" v-bind:key="dateFormat">
                         {{dateFormat}}
                     </th>
+                    <th>
+
+                    </th>
                     <th style="font-size:14px; font-weight:bold; color:black;">
                         Total:
                     </th>
@@ -22,32 +25,37 @@
                     :key="index"
                     >
                     <td>
-                        <div class="mt-6 mb-6">        
+                        <div class="mt-6 mb-6 font-weight-medium">        
                             <p>{{ getProjectName(rowObj.projectId) }}</p>
                         </div>
                     </td>
                     <td class="text-center" >
-                        <p>{{ rowObj.monday }}</p>
+                        <p>{{ checkAndGetValue(rowObj.monday) }}</p>
                     </td>
                     <td class="text-center">
-                        <p>{{ rowObj.tuesday }}</p>
+                        <p>{{ checkAndGetValue(rowObj.tuesday) }}</p>
                     </td>
                     <td class="text-center">
-                        <p>{{ rowObj.wednesday }}</p>
+                        <p>{{ checkAndGetValue(rowObj.wednesday) }}</p>
                     </td>
                     
                     <td class="text-center">
-                        <p>{{ rowObj.thursday }}</p>
+                        <p>{{ checkAndGetValue(rowObj.thursday) }}</p>
                     </td>
                     <td class="text-center">
-                        <p>{{ rowObj.friday }}</p>
+                        <p>{{ checkAndGetValue(rowObj.friday) }}</p>
                     </td>
                     <td class="text-center">
-                        {{ rowObj.satuarday }}
+                        {{ checkAndGetValue(rowObj.satuarday) }}
                     </td>
                     <td class="text-center">
-                        {{ rowObj.sunday }}
+                        {{ checkAndGetValue(rowObj.sunday) }}
                     </td>
+
+                    <td class="pa-0 text-center" >
+                        <CommentPopup :comment="rowObj.comment" />
+                    </td>
+
                     <td class="text-center">
                         <p>
                             {{ totalHoursOnProject(rowObj) }}
@@ -82,6 +90,9 @@
                     <td class="text-center" >
                         {{ getTotalHoursOfDay('sunday') }}
                     </td>
+                    <td>
+                        
+                    </td>
                     <td class="text-center" >
                         {{ getTotal}}
                     </td>
@@ -94,6 +105,7 @@
 
 <script>
     import {mapState} from "vuex" 
+    import CommentPopup from "./CommentPopup.vue"
 
     export default({
         data(){
@@ -107,6 +119,10 @@
         props:[
             'weekData'
         ],
+
+        components:{
+            CommentPopup,
+        },
 
         watch:{
             weekData(newValue){
@@ -158,6 +174,14 @@
                 const obj = this.projectList.find((each) => each.projectId === projectId) ;
            
                 return obj.projectName ;
+            },
+
+            checkAndGetValue(value){
+                if(value === 0){
+                    return null
+                }
+                
+                return value ;
             }
         }
     })

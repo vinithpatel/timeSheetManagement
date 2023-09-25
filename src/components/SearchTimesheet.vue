@@ -1,38 +1,13 @@
 <template>
-    <v-container>
-    <v-row justify="center" >
-      <v-dialog
-        v-model="dialog"
-        fullscreen 
-        persistent 
-      >
-        <template v-slot:activator="{ props }">
-          <v-btn
-            variant="text"
-            color="primary"
-            v-bind="props"
-            v-on:click="$store.commit('updateDaysOfWeek')"
-          >
-            Search TimeSheet
-          </v-btn>          
-        </template>
-        
-        <v-card>
+    <v-container fluid class="w-100 h-100" >
+      <v-card width="100%" height="100%" variant="elevated" elevation="10" :loading="loading">
           <v-toolbar
           dark
-          color="primary"
+          color="#6a70eb"
+          height="50"
         >
           <v-toolbar-title>Search TimeSheet</v-toolbar-title>
-          <v-spacer></v-spacer>
-          <v-toolbar-items>
-            <v-btn
-            icon
-            dark
-            @click="dialog = false"
-          >
-            <v-icon>mdi-close</v-icon>
-          </v-btn>
-          </v-toolbar-items>
+          
         </v-toolbar>
           <v-card-title >
             <v-row align="end">
@@ -118,29 +93,22 @@
                     <td class="text-center">{{ item.logHours }}</td>
                     <td class="text-center" >
                       
-                        {{item.status}}
+                      <TimesheetStatus :status="item.status" />
                       
                     </td>
-                    
-                  </tr>
+                  </tr>          
                 </tbody>
               </v-table>
           </v-card-text>
+
+          <div v-if="timeSheets.length === 0" class="d-flex flex-row justify-center align-center">
+                      <p class="font-weight-medium">No Data Available</p>
+          </div>
           
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn
-              color="blue-darken-1"
-              variant="text"
-              @click="dialog = false"
-            >
-              Cancel
-            </v-btn>
-            
           </v-card-actions>
         </v-card>
-      </v-dialog>
-    </v-row>
 </v-container>
 
   </template>
@@ -149,6 +117,7 @@
   import {subDays, subYears, format} from 'date-fns'
   import DateRange from "./DateRange.vue" 
   import WeekSheet from "./WeekSheet.vue" ;
+  import TimesheetStatus from "./TimesheetStatus.vue"
   import {mapState} from "vuex" ;
 
     export default {
@@ -196,14 +165,16 @@
         
         timeSheets:[
           {
+            timeSheetId:1,
             employeeId:1001,
             employeeName:'vinith kumar',
             week:'2023-W37',
             logHours:"40",
-            status:"Pending",
+            status:"open",
 
           },
           {
+            timeSheetId:2,
             employeeId:1002,
             employeeName:'Rahul',
             week:'2023-W36',
@@ -214,7 +185,7 @@
       }),
 
       components:{
-        DateRange, WeekSheet
+        DateRange, WeekSheet, TimesheetStatus
       },
 
       computed:{
@@ -268,6 +239,8 @@
         },
 
         async getTimeSheets(){
+
+          this.loading = true ;
           
           const {startDate, endDate} = this.getStartAndEndDate()
 
@@ -287,6 +260,8 @@
             this.timeSheets = data ;
           }
           
+          this.loading = false
+
         },
 
         updateDateRange(data){

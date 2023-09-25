@@ -1,6 +1,5 @@
 import {createStore} from "vuex" 
 import {startOfWeek, addDays, format, addWeeks} from "date-fns" ;
-import {v4 as uuidV4} from "uuid";
 import emailjs from 'emailjs-com' ;
 
 import router from "../router.js" ;
@@ -9,56 +8,30 @@ import router from "../router.js" ;
 export default createStore({
     state:{
         employeeId:1001,
-        employeeName:'',
+        employeeName:'vinith kumar',
         email:'',
         isAdmin:false ,
-        isLogin:false,
+        isLogin:true,
         daysOfWeek:[],
         selectedWeek:'2023-W36',
         startDate:"",        //format '2023-10-31'
         endDate:"",          //format '2023-10-31'
         projectList:[],
+        notificationObj:{
+            show:false,
+            message:'',
+        }
 
-        weeklyProjectHoursList:{
-            '2023-W36':[
-                {
-                    id:uuidV4(),
-                    project:"TimeSheet Managment",
-                    monday:1,
-                    tuesday:1,
-                    wednesday:1,
-                    thursday:1,
-                    friday:1,
-                    saturday:1,
-                    sunday:1,
-            }
-        ],
-        '2023-W35':[
-            {
-                id:uuidV4(),
-                project:"TimeSheet Managment",
-                monday:0,
-                tuesday:0,
-                wednesday:0,
-                thursday:0,
-                friday:0,
-                saturday:0,
-                sunday:1,
-        }
-    ],
-        }
     },
 
     mutations:{
-        updateLogin(state){
-            state.isLogin = !state.isLogin ;
-        },
 
-        updateEmployeeDetails(state, obj){
+        updateEmployeeDetailsAndLogin(state, obj){
             state.employeeId = obj.employeeId ;
             state.employeeName = obj.employeeName ;
             state.email = obj.email ;
             state.isAdmin = obj.isAdmin ;
+            state.isLogin = true ;
 
             console.log(obj) ;
         },
@@ -94,29 +67,6 @@ export default createStore({
 
         },
 
-        createNewRow(state){
-            const newRow = {
-                id:uuidV4(),
-                project:null,
-                monday:null,
-                tuesday:null,
-                wednesday:null,
-                thursday:null,
-                friday:null,
-                saturday:null,
-                sunday:null,
-            }
-
-            const {weeklyProjectHoursList, selectedWeek} = state ;
-            
-            if(weeklyProjectHoursList[selectedWeek] === undefined){
-                weeklyProjectHoursList[selectedWeek] = [] ;
-            }
-
-            const updatedArray = [...weeklyProjectHoursList[selectedWeek], newRow]
-
-            state.weeklyProjectHoursList[selectedWeek] = updatedArray ;
-        },
 
         updateRowInput(state, obj){
             const {weeklyProjectHoursList, selectedWeek} = state ;
@@ -152,17 +102,34 @@ export default createStore({
 
         onLogout(state){
             state.isLogin = false ;
+        },
+
+        showNotification(state, message){
+            state.notificationObj = {
+                show:true,
+                message,
+            }
+        },
+
+        hideNotification(state){
+            state.notificationObj = {
+                show:false,
+                message:'',
+            }
         }
     },
 
     actions:{
-        updateLogin(store){
-            store.commit('updateLogin');
+        showNotification(store, message){
+            store.commit('showNotification', message) 
+
+            setTimeout(()=>{
+                store.commit('hideNotification') ;
+            })
         },
-    
-        createNewRow(store){
-            store.commit('createNewRow') ;
-            
+
+        hideNotification(store){
+            store.commit('hideNotification') ;
         },
 
         updateRowInput(store, obj){
@@ -173,11 +140,6 @@ export default createStore({
         updateSelectedWeek(store, value){
             store.commit('updateSelectedWeek', value);
             store.commit('updateDaysOfWeek') ;
-
-            if(store.state.weeklyProjectHoursList[value] === undefined){
-                store.commit('createNewRow') ;
-            }
-            
         },
 
         onLogout(store){
@@ -219,7 +181,8 @@ export default createStore({
 
             if(response.ok){
                 const data = await response.json() ;
-                console.log(data) ;
+                store.commit('showNotification', 'Timesheet Approved')
+                console.log(data)
             }
         },
 
@@ -238,6 +201,8 @@ export default createStore({
 
             if(response.ok){
                 const data = await response.json() ;
+                
+                store.commit('showNotification', data.text)
                 console.log(data.text) ;
             }
         },
@@ -255,6 +220,7 @@ export default createStore({
 
             if(response.ok){
                 const data = await response.json() ;
+                store.commit('showNotification', 'Timesheet Denied')
                 console.log(data) ;
             }
         },
@@ -272,6 +238,7 @@ export default createStore({
 
             if(response.ok){
                 const data = await response.json() ;
+                store.commit('showNotification', 'Timesheet Re-opened')
                 console.log(data) ;
             }
         },
@@ -293,7 +260,26 @@ export default createStore({
             }catch(error){
                 console.log(error) ;
             }
-        }
+        },
+
+        async sendEmailOnAction(store, obj){
+            const {timeSheetId, employeeName, startDate, endDate, message, action} = obj
+
+            try{
+                await emailjs.send('service_evxhn1b', 'template_pdlg2yl', {
+                    action,
+                    employeeName,
+                    timeSheetId,
+                    startDate,
+                    endDate,
+                    message
+                }, '75B7CIXrKgR0C1weF')
+            }catch(error){
+                console.log(error) ;
+            }
+        },
+
+        
     },
 
     getters:{
@@ -301,27 +287,39 @@ export default createStore({
             return state.isLogin ;
         },
 
-        isWeekDataExist(state){
-            const {selectedWeek, weeklyProjectHoursList} = state ;
+        // isWeekDataExist(state){
+        //     const {selectedWeek, weeklyProjectHoursList} = state ;
 
-            return weeklyProjectHoursList[selectedWeek] !== undefined ;
-        },
+        //     return weeklyProjectHoursList[selectedWeek] !== undefined ;
+        // },
 
-        totalHours(state){
-            const {weeklyProjectHoursList, selectedWeek} = state 
+        // totalHours(state){
+        //     const {weeklyProjectHoursList, selectedWeek} = state 
 
-            let total = 0;
-            weeklyProjectHoursList[selectedWeek].forEach(eachObj => {
-                total+= eachObj.monday
-                        +eachObj.tuesday
-                        +eachObj.wednesday
-                        +eachObj.thursday
-                        +eachObj.friday
-                        +eachObj.saturday
-                        +eachObj.sunday ;
-            })
+        //     let total = 0;
+        //     weeklyProjectHoursList[selectedWeek].forEach(eachObj => {
+        //         total+= eachObj.monday
+        //                 +eachObj.tuesday
+        //                 +eachObj.wednesday
+        //                 +eachObj.thursday
+        //                 +eachObj.friday
+        //                 +eachObj.saturday
+        //                 +eachObj.sunday ;
+        //     })
 
-            return total.toFixed(1) ;
+        //     return total.toFixed(1) ;
+        // }
+
+        getFormatedDateString(){
+            return (dateString) => {
+                const date = new Date(dateString) ;
+
+                const dateFormat = format(date, "dd, MMM yyyy") ;
+                
+                return (dateFormat) ;
+            }
         }
-    }
+    },
+
 })
+

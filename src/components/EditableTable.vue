@@ -17,7 +17,7 @@
                 variant="outlined" 
                 color="#b93bd9"
                 v-bind="props"
-                v-bind:disabled="!isSaved || isMoreEightHours || getTotal > 40"
+                v-bind:disabled="!isSaved || isMoreEightHours || getTotal > 40 || isTimeSheetValid"
                 >
                     Review and Submit
                 </v-btn>
@@ -188,8 +188,6 @@
                         </p>
                     </td>
 
-                    
-
                     <td class="pa-0">
                         <v-btn icon="mdi-close" variant="text" size="small" @click="onClickDelete(rowObj.id)" >
                         
@@ -299,6 +297,14 @@
                 }
 
                 return false ;
+            },
+
+            isTimeSheetValid(){
+                if(this.timeSheetList.length > 0){
+                    return this.timeSheetList[0].projectId === null
+                }
+
+                return true
             }
         },
 

@@ -1,38 +1,12 @@
 <template>
-  <v-container>
-  <v-row justify="center" >
-    <v-dialog
-      v-model="dialog"
-      fullscreen 
-      persistent 
-    >
-      <template v-slot:activator="{ props }">
-        <v-btn
-          variant="text"
-          color="primary"
-          v-bind="props"
-          v-on:click="$store.commit('updateDaysOfWeek')"
-        >
-          Employee TimeSheet
-        </v-btn>          
-      </template>
-      
-      <v-card>
+  <v-container fluid class="w-100 h-100" >
+    <v-card width="100%" height="100%" variant="elevated" elevation="10" :loading="loading" >
         <v-toolbar
         dark
-        color="primary"
-      >
-        <v-toolbar-title>Employee TimeSheet</v-toolbar-title>
-        <v-spacer></v-spacer>
-        <v-toolbar-items>
-          <v-btn
-          icon
-          dark
-          @click="dialog = false"
+        color="#6a70eb"
+        height="50"
         >
-          <v-icon>mdi-close</v-icon>
-        </v-btn>
-        </v-toolbar-items>
+        <v-toolbar-title>Employee TimeSheet</v-toolbar-title>
       </v-toolbar>
         <v-card-title >
           <v-row align="end">
@@ -178,7 +152,7 @@
                   <td class="text-center">{{ item.logHours }}</td>
                   
                   <td class="text-center">
-                    {{ item.status }}
+                    <TimesheetStatus :status="item.status" />
                   </td>                  
 
                   
@@ -187,21 +161,16 @@
               </tbody>
             </v-table>
         </v-card-text>
+
+        <div v-if="timeSheets.length === 0" class="d-flex flex-row justify-center align-center">
+                      <p class="font-weight-medium">No Data Available</p>
+        </div>
         
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn
-            color="blue-darken-1"
-            variant="text"
-            @click="dialog = false"
-          >
-            Cancel
-          </v-btn>
           
         </v-card-actions>
       </v-card>
-    </v-dialog>
-  </v-row>
 </v-container>
 
 </template>
@@ -210,6 +179,7 @@
 import {subDays, subYears, format} from 'date-fns'
 import DateRange from "./DateRange.vue" 
 import WeekSheet from "./WeekSheet.vue" ;
+import TimesheetStatus from "./TimesheetStatus.vue"
 
   export default {
   name:"TimeSheet",
@@ -280,7 +250,7 @@ import WeekSheet from "./WeekSheet.vue" ;
     }),
 
     components:{
-      DateRange, WeekSheet
+      DateRange, WeekSheet,TimesheetStatus
     },
 
 

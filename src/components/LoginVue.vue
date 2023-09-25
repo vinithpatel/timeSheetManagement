@@ -126,7 +126,7 @@
             const data = await response.json() ;
 
             if(response.ok){
-                this.$store.commit('updateEmployeeDetails', data) ;
+                this.$store.commit('updateEmployeeDetailsAndLogin', data) ;
                 router.push("/")
             }
             else{
@@ -135,7 +135,7 @@
 
             this.loading = false;
 
-            this.$store.dispatch('updateLogin')
+
         }
     }
   }

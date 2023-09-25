@@ -10,6 +10,7 @@
             variant="text"
             v-bind="props"
             class="week-number-link"
+            @click="onClickWeek"
           >
             {{title}}
           </v-btn>
@@ -18,7 +19,7 @@
           <v-card-title>
             <div class="d-flex flex-row justify-space-between">
                 <span class="text-h7">TimeSheet ID : {{ timeSheet.timeSheetId }}</span>
-                <span class="text-h8" >{{ timeSheet.startDate }} to {{ timeSheet.endDate }}</span>
+                <p style="font-size:14px;" >{{ getFormatedDateString(timeSheet.startDate) }} - {{ getFormatedDateString(timeSheet.endDate) }}</p>
                 <span class="text-h9">Employee ID: {{ timeSheet.employeeId }}</span>
             </div>
             
@@ -38,16 +39,14 @@
             </v-btn>
 
             <div v-if="isAdmin && timeSheet.status === 'submited'">
-                <v-btn variant="outlined" color="warning" @click="onClickOpen" :loading="openLoading">
-                    Re-Open
-                </v-btn>
-                <v-btn variant="outlined" color="red" @click="onClickDeny" :loading="denyLoading" >
-                    Deny
-                </v-btn>
+                
+                <AdminButton color="warning" text="Re-open" @onClickOpen="onClickOpen" :loading="openLoading"/>
 
-                <v-btn variant="outlined" color="green" @click="onClickApprove()" :loading="approveLoading" >
-                  Approve
-                </v-btn>
+                
+                <AdminButton color="red" text="Deny" @onClickDeny="onClickDeny" :loading="denyLoading"/>
+
+              
+                <AdminButton color="green" text="Approve" @onClickApprove="onClickApprove" :loading="approveLoading" />
             </div>
 
             <div v-if="!isAdmin && timeSheet.status === 'open'" >
@@ -63,8 +62,9 @@
   </template>
 
   <script>
-    import {mapState} from "vuex" ;
+    import {mapState, mapGetters} from "vuex" ;
     import NonEditableTable from "./NonEditableTable.vue"
+    import AdminButton from "./AdminButton.vue";
 
     export default {
       data: () => ({
@@ -74,7 +74,6 @@
         approveLoading:false,
         denyLoading:false,
         openLoading:false,
-        weekData:[],
       }),
 
       computed:{
@@ -82,10 +81,14 @@
           'employeeId', 'employeeName', 'isAdmin'
         ]),
 
+        ...mapGetters([
+          'getFormatedDateString' 
+        ]),
+
       },
 
       components:{
-        NonEditableTable,
+        NonEditableTable,AdminButton
       },
 
       props:[
@@ -93,11 +96,26 @@
       ],
 
       methods:{
-        async onClickApprove(){
+
+        onClickWeek(){
+          this.$store.dispatch('updateSelectedWeek', this.timeSheet.week) ;
+        },
+
+        async onClickApprove(message){
+          const {timeSheetId, employeeName, startDate, endDate} = this.timeSheet ;
 
             this.approveLoading = true ;
                
                await this.$store.dispatch('approveTimeSheet', this.timeSheet.timeSheetId) ;
+               await this.$store.dispatch('sendEmailOnAction',{
+              timeSheetId,
+              employeeName,
+              startDate,
+              endDate,
+              message,
+              action:'Approved',
+            } )
+               
                this.$emit('getTimeSheets') ;
                this.dialog = false ;
 
@@ -125,20 +143,43 @@
                 
         },
 
-        async onClickOpen(){
+        async onClickOpen(message){
+          const {timeSheetId, employeeName, startDate, endDate} = this.timeSheet ;
+
             this.openLoading = true ;
 
-            await this.$store.dispatch('openTimeSheet', this.timeSheet.timeSheetId) ;       
+            await this.$store.dispatch('openTimeSheet', this.timeSheet.timeSheetId) ;  
+            await this.$store.dispatch('sendEmailOnAction',{
+              timeSheetId,
+              employeeName,
+              startDate,
+              endDate,
+              message,
+              action:'Re-Opened',
+            } )
+
             this.$emit('getTimeSheets') ;
 
             this.openLoading = false ;
             this.dialog = false ;
         },
 
-        async onClickDeny(){
+        async onClickDeny(message){
+
+            const {timeSheetId, employeeName, startDate, endDate} = this.timeSheet ;
+
             this.denyLoading = true ;
 
-            await this.$store.dispatch('denyTimeSheet', this.timeSheet.timeSheetId) ;       
+            await this.$store.dispatch('denyTimeSheet', this.timeSheet.timeSheetId) ; 
+            await this.$store.dispatch('sendEmailOnAction',{
+              timeSheetId,
+              employeeName,
+              startDate,
+              endDate,
+              message,
+              action:'Denied',
+            } )      
+
             this.$emit('getTimeSheets') ;
 
             this.denyLoading = false ;

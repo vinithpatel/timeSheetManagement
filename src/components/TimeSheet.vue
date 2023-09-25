@@ -22,6 +22,9 @@
           <v-card-title>
             <div class="w-100 d-flex flex-row justify-space-between">
               <span class="text-h5">TimeSheet</span>
+
+              <TimesheetStatus v-if="timeSheetObj !== undefined" :status="timeSheetObj.status" />
+
               <input class="week-calendar-input" type="week" v-model="calendarValue"
                 @change="onChangeWeek"
               />
@@ -67,6 +70,7 @@
   //import TableVue from './TableVue.vue';
   import EditableTable from "./EditableTable.vue"
   import NonEditableTable from "./NonEditableTable.vue"
+  import TimesheetStatus from "./TimesheetStatus.vue"
   import {getWeek} from "date-fns"
 
     export default {
@@ -80,7 +84,7 @@
       }),
 
       components:{
-        EditableTable,NonEditableTable,//TableVue,
+        EditableTable,NonEditableTable,TimesheetStatus//TableVue,
       },
 
       computed:{
@@ -96,8 +100,10 @@
       methods:{
         
         onChangeWeek(){
-          this.$store.dispatch('updateSelectedWeek', this.calendarValue) ;
-          this.getTimeSheet()
+          if(this.calendarValue !== ''){
+            this.$store.dispatch('updateSelectedWeek', this.calendarValue) ;
+            this.getTimeSheet()
+          }          
         },
 
         async getTimeSheet(){
@@ -172,15 +178,10 @@
         //setting up the calendarValue data property to show current week in calendar
         this.calendarValue = weekViewFormat ;
 
+        console.log()
+
         // passing weekFormat to store state 
         this.$store.dispatch('updateSelectedWeek', weekViewFormat) ;
-
-        //check the week data exist or not using store getter method
-        const isWeekDataExist = this.$store.getters.isWeekDataExist ;
-        
-        if(!isWeekDataExist){
-          this.$store.dispatch('createNewRow') ;
-        }
         
         //const dataInStringFormat = localStorage.getItem('weeklyData')
         //const weeklyData = JSON.parse(dataInStringFormat) ;       

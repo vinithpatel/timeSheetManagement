@@ -1,5 +1,9 @@
 <template>
-    <v-container>
+    <div>
+        <div v-if="loading" class="d-flex flex-row align-center justify-center" style="height:200px">
+            <v-progress-circular color="primary" indeterminate></v-progress-circular>
+        </div>
+        <v-container v-if="!loading">
         <v-row>
             <v-table >
                 <thead>
@@ -10,6 +14,11 @@
                     <th style="font-size:13px;" class="text-left" v-for="dateFormat in $store.state.daysOfWeek" v-bind:key="dateFormat">
                         {{dateFormat}}
                     </th>
+
+                    <th>
+
+                    </th>
+
                     <th style="font-size:14px; font-weight:bold; color:black;">
                         Total:
                     </th>
@@ -22,32 +31,37 @@
                     :key="index"
                     >
                     <td>
-                        <div class="mt-6 mb-6">        
+                        <div class="mt-6 mb-6 font-weight-medium">        
                             <p>{{ rowObj.projectName }}</p>
                         </div>
                     </td>
                     <td class="text-center" >
-                        <p>{{ rowObj.monday }}</p>
+                        <p>{{ checkAndGetValue(rowObj.monday) }}</p>
                     </td>
                     <td class="text-center">
-                        <p>{{ rowObj.tuesday }}</p>
+                        <p>{{ checkAndGetValue(rowObj.tuesday) }}</p>
                     </td>
                     <td class="text-center">
-                        <p>{{ rowObj.wednesday }}</p>
+                        <p>{{ checkAndGetValue(rowObj.wednesday) }}</p>
                     </td>
                     
                     <td class="text-center">
-                        <p>{{ rowObj.thursday }}</p>
+                        <p>{{ checkAndGetValue(rowObj.thursday) }}</p>
                     </td>
                     <td class="text-center">
-                        <p>{{ rowObj.friday }}</p>
+                        <p>{{ checkAndGetValue(rowObj.friday) }}</p>
                     </td>
                     <td class="text-center">
-                        {{ rowObj.satuarday }}
+                        {{ checkAndGetValue(rowObj.satuarday) }}
                     </td>
                     <td class="text-center">
-                        {{ rowObj.sunday }}
+                        {{ checkAndGetValue(rowObj.sunday) }}
                     </td>
+
+                    <td class="pa-0 text-center" >
+                        <CommentPopup :comment="rowObj.comment" />
+                    </td>
+
                     <td class="text-center">
                         <p>
                             {{ rowObj.total }}
@@ -58,30 +72,41 @@
                 >
                     <td>
                         <p>
-                            Total :
+                            Total : 
                         </p>
                     </td>
+
                     <td class="text-center" >
                         {{ getTotalHoursOfDay('monday') }}
                     </td>
+
                     <td class="text-center" >
                         {{ getTotalHoursOfDay('tuesday') }}
                     </td>
+
                     <td class="text-center" >
                         {{ getTotalHoursOfDay('wednesday') }}
                     </td>
+
                     <td class="text-center" >
                         {{ getTotalHoursOfDay('thursday') }}
                     </td>
+
                     <td class="text-center" >
                         {{ getTotalHoursOfDay('friday') }}
                     </td>
+
                     <td class="text-center" >
                         {{ getTotalHoursOfDay('satuarday') }}
                     </td>
                     <td class="text-center" >
                         {{ getTotalHoursOfDay('sunday') }}
                     </td>
+                    
+                    <td>
+
+                    </td>
+                   
                     <td class="text-center" >
                         {{ getTotal}}
                     </td>
@@ -90,15 +115,18 @@
             </v-table>
         </v-row>
     </v-container>
+</div>
 </template>
 
 <script>
+    import CommentPopup from "./CommentPopup.vue"
 
     export default({
         data(){
             return (
                 {
                     selectValue:"",
+                    loading:false,
                     timeSheetList: [],
                     sheetObj:this.timeSheetObj,
                 }
@@ -108,6 +136,10 @@
         props:[
             'timeSheetObj'
         ],
+
+        components:{
+            CommentPopup,
+        },
 
         watch:{
             timeSheetObj(newValue){
@@ -149,6 +181,8 @@
             },
 
             async getTimeSheetData(){
+                this.loading = true ;
+
                 const url = `http://localhost:8001/timesheet/${this.sheetObj.timeSheetId}` ;
                 const options = {
                     method:"GET",
@@ -157,21 +191,31 @@
                     }
                 }
 
-                const response = await fetch(url, options) ;
-
-                
-
-                if(response.ok){
+                try{
+                    const response = await fetch(url, options) ;
+                    if(response.ok){
                     const data = await response.json() ;
                     this.timeSheetList = data ;
-                    console.log(this.timeSheetList) ;
-
 
                     if(this.timeSheetList.length === 0){
                         this.addNewRow()   
                     }
                 }
+                }
+                catch(error){
+                    console.log(error) ;
+                }               
+
+                this.loading = false;
             },
+
+            checkAndGetValue(value){
+                if(value === 0){
+                    return null
+                }
+                
+                return value ;
+            }
         },
         
         mounted(){
