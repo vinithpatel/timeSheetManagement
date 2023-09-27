@@ -75,7 +75,7 @@
                     v-for="rowObj in timeSheetList"
                     :key="rowObj.id"
                     >
-                    <td >
+                    <td>
                         <div class="mt-6 mb-6" >
                             <v-select
                             label="Select Project"
@@ -84,72 +84,133 @@
                             :model-value="rowObj.projectName"
                             hide-details
                             @update:model-value="setProjectValue($event,{rowId:rowObj.id, name:'projectName'})"              
-                            ></v-select>
-                            
+                            ></v-select>              
                         </div>
                     </td>
-                    <td class="text-center pa-1" >
-                        <v-text-field  variant="outlined" density="comfortable" hide-details
-                        @input = "restrictChar($event,{rowId:rowObj.id,name:'monday'})"
-                        v-bind:model-value="rowObj.monday"
-                        type="number"
-                        v-bind:v-model="rowObj.monday"
-                        
+                    <td class="text-center pa-1" style="width:95px;">
+                        <InputField 
+                            v-slot="{isHovered, onClickIcon}" 
+                            :comment="rowObj.mondayComment" 
+                            :obj="{rowId:rowObj.id, name:'mondayComment'}" 
+                            @setRowValue="setRowValue" 
                         >
-                        
+                        <v-text-field  variant="outlined" density="comfortable" hide-details
+                            @input = "restrictChar($event,{rowId:rowObj.id,name:'monday'})"
+                            v-bind:model-value="rowObj.monday"
+                            type="number"
+                            v-bind:v-model="rowObj.monday"
+                            :append-inner-icon="isHovered ? 'mdi-comment' : ''"
+                            @click:append-inner="onClickIcon"         
+                        >           
                         </v-text-field>
+                    </InputField>
+                                                  
                     </td>
-                    <td class="text-center pa-1">
+                    <td class="text-center pa-1" style="width:95px;">
+                        <InputField 
+                            v-slot="{isHovered, onClickIcon}" 
+                            :comment="rowObj.tuesdayComment"
+                            :obj="{rowId:rowObj.id, name:'tuesdayComment'}" 
+                            @setRowValue="setRowValue"
+                        >
                         <v-text-field  variant="outlined" density="comfortable" hide-details
                         @input = "restrictChar($event,{rowId:rowObj.id,name:'tuesday'})"
                         v-bind:model-value="rowObj.tuesday"
                         type="number"
+                        :append-inner-icon="isHovered ? 'mdi-comment' : ''"
+                        @click:append-inner="onClickIcon" 
                         >
                         </v-text-field>
+                        </InputField>
                     </td>
-                    <td class="text-center pa-1">
+                    <td class="text-center pa-1" style="width:95px;">
+                        <InputField 
+                            v-slot="{isHovered, onClickIcon}" 
+                            :comment="rowObj.wednesdayComment"
+                            :obj="{rowId:rowObj.id, name:'wednesdayComment'}" 
+                            @setRowValue="setRowValue"
+                        >
                         <v-text-field  variant="outlined" density="comfortable" hide-details
                         @input = "restrictChar($event,{rowId:rowObj.id,name:'wednesday'})"
                         v-bind:model-value="rowObj.wednesday"
                         type="number"
+                        :append-inner-icon="isHovered ? 'mdi-comment' : ''"
+                        @click:append-inner="onClickIcon" 
                         >
                         </v-text-field>
+                    </InputField>
                     </td>
-                    <td class="text-center pa-1">
+                    <td class="text-center pa-1" style="width:95px;">
+                        <InputField 
+                            v-slot="{isHovered, onClickIcon}" 
+                            :comment="rowObj.thursdayComment"
+                            :obj="{rowId:rowObj.id, name:'thursdayComment'}" 
+                            @setRowValue="setRowValue"
+                        >
                         <v-text-field  variant="outlined" density="comfortable" hide-details
                         
                         @input = "restrictChar($event,{rowId:rowObj.id,name:'thursday'})"
                         v-bind:model-value="rowObj.thursday"
                         type="number"
+                        :append-inner-icon="isHovered ? 'mdi-comment' : ''"
+                        @click:append-inner="onClickIcon" 
                         >
                         </v-text-field>
+                    </InputField>
                     </td>
-                    <td class="text-center pa-1">
+                    <td class="text-center pa-1" style="width:95px;">
+                        <InputField 
+                            v-slot="{isHovered, onClickIcon}" 
+                            :comment="rowObj.fridayComment"
+                            :obj="{rowId:rowObj.id, name:'fridayComment'}" 
+                            @setRowValue="setRowValue"
+                        >
                         <v-text-field  variant="outlined" density="comfortable" hide-details
                         
                         @input = "restrictChar($event,{rowId:rowObj.id,name:'friday'})"
                         v-bind:model-value="rowObj.friday"
                         type="number"
+                        :append-inner-icon="isHovered ? 'mdi-comment' : ''"
+                        @click:append-inner="onClickIcon" 
                         >
                         </v-text-field>
+                    </InputField>
                     </td>
-                    <td class="text-center pa-1">
+                    <td class="text-center pa-1" style="width:95px;">
+                        <InputField 
+                            v-slot="{isHovered, onClickIcon}" 
+                            :comment="rowObj.satuardayComment"
+                            :obj="{rowId:rowObj.id, name:'satuardayComment'}" 
+                            @setRowValue="setRowValue"
+                        >
                         <v-text-field  variant="outlined" density="comfortable" hide-details
                         
                         @input = "restrictChar($event,{rowId:rowObj.id,name:'satuarday'})"
                         v-bind:model-value="rowObj.satuarday"
                         type="number"
+                        :append-inner-icon="isHovered ? 'mdi-comment' : ''"
+                        @click:append-inner="onClickIcon" 
                         >
                         </v-text-field>
+                    </InputField>
                     </td>
-                    <td class="text-center pa-1">
+                    <td class="text-center pa-1" style="width:95px;">
+                        <InputField 
+                            v-slot="{isHovered, onClickIcon}" 
+                            :comment="rowObj.sundayComment"
+                            :obj="{rowId:rowObj.id, name:'sundayComment'}" 
+                            @setRowValue="setRowValue"
+                        >
                         <v-text-field  variant="outlined" density="comfortable" hide-details
                         
                         @input = "restrictChar($event,{rowId:rowObj.id,name:'sunday'})"
                         v-bind:model-value="rowObj.sunday"
                         type="number"
+                        :append-inner-icon="isHovered ? 'mdi-comment' : ''"
+                        @click:append-inner="onClickIcon" 
                         >
                         </v-text-field>
+                    </InputField>
                     </td>
 
                     <td class="pa-0 text-center" >
@@ -239,12 +300,14 @@
     import {v4 as uuidV4} from "uuid";
     import {mapState} from "vuex"
     import ReviewTable from "./ReviewTable.vue";
+    import InputField from "./InputField.vue" ;
 
 
     export default({
         data(){
             return (
                 {
+                    isHovering:false,
                     dialog:false,
                     sheetObj:this.timeSheetObj,
                     saveLodaing:false ,
@@ -274,7 +337,7 @@
         },
 
         components:{
-            ReviewTable,
+            ReviewTable,InputField
         },
     
         computed:{
@@ -392,6 +455,13 @@
                     sunday:null,
                     total:null,
                     comment:null,
+                    mondayComment:null,
+                    tuesdayComment:null,
+                    wednesdayComment:null,
+                    thursdayComment:null,
+                    fridayComment:null,
+                    satuardayComment:null,
+                    sundayComment:null
                 }
 
                 this.timeSheetList = [...this.timeSheetList, newRow] ;
@@ -418,7 +488,6 @@
                     row[name] = value ;
                 }
 
-                console.log(row) ;
 
                 this.isSaved = false ;
                 
@@ -427,7 +496,6 @@
         updateLocalProjectList(){
             const filterList = this.projectList.filter((eachObj) => {
                     const condition = this.timeSheetList.every(timeSheetObj => timeSheetObj.projectId !== eachObj.projectId)
-                    console.log(condition) ;
                     return condition
             })
         
@@ -502,6 +570,8 @@
                 this.isSaved = true ;
             },
 
+            
+
             async onClickSubmit(){
                 this.submitLoading = true ;
 
@@ -544,6 +614,10 @@
 
     .error{
         color:red;
+    }
+
+    v-text-field, v-con{
+        font-size:12px;
     }
 
 </style>
