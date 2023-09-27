@@ -28,5 +28,9 @@ export default {
     ...mapState(['isLogin']),
   },
 
+  created(){
+    this.$store.commit('updateLoginDetailsInState') ;
+  }
+
 }
 </script>

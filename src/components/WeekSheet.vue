@@ -29,7 +29,9 @@
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
+            <v-btn icon="mdi-export-variant" @click="downloadPDF">
 
+            </v-btn>
             <v-btn
                 color="blue-darken-1"
                 variant="text"
@@ -65,6 +67,10 @@
     import {mapState, mapGetters} from "vuex" ;
     import NonEditableTable from "./NonEditableTable.vue"
     import AdminButton from "./AdminButton.vue";
+    import jsPDF from "jspdf";
+    import "jspdf-autotable";
+
+
 
     export default {
       data: () => ({
@@ -184,7 +190,54 @@
 
             this.denyLoading = false ;
             this.dialog = false ;
-        }
+        },
+
+        async downloadPDF() {
+      // Create a new jsPDF instance
+          const doc = new jsPDF();
+
+          // Add content to the PDF (e.g., timesheet data)
+          doc.text(`Employee ID : ${this.timeSheet.employeeId}`, 10, 10);
+          doc.text(`Employee Name : ${this.timeSheet.employeeName}`, 10, 20);
+          doc.text(`Period : ${this.getFormatedDateString(this.timeSheet.startDate)} - ${this.getFormatedDateString(this.timeSheet.endDate)}`, 10, 30) ;
+          // Add more text or data as needed...
+
+          const options={
+            method:"GET",
+            'Content-Type':'application/json'
+          }
+
+          const response = await fetch(`http://localhost:8001/timesheet/export/${this.timeSheet.timeSheetId}`, options) ;
+
+          if(response.ok){
+            const data = await response.json() ;
+
+            const columns = ["Project Id", "Project Name", "Hours", "Cost (Euros)"] ;
+
+            let totalCost = 0 ;
+            let totalHours = 0 ; 
+
+            const tableData = data.map(each => {
+                  totalCost += each.cost ;
+                  totalHours += each.total ;
+
+                    return [each.projectId, each.projectName, each.total,  each.cost] ;
+            })
+
+            tableData.push(['Total', '', totalHours, totalCost]) ;
+
+            doc.autoTable({
+              head:[columns],
+              body:tableData,
+              startY:50, //adjust the vertical starting position
+            })
+
+            // Save the PDF
+            doc.save("weekly_timesheet_report.pdf");
+            this.$store.dispatch('showNotification', 'Pdf Downloading..')
+
+          }
+        },
       }
 
     }

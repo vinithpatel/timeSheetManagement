@@ -127,6 +127,7 @@
 
             if(response.ok){
                 this.$store.commit('updateEmployeeDetailsAndLogin', data) ;
+                this.$store.commit('updateLoginDetailsInLocal', data) ;
                 router.push("/")
             }
             else{

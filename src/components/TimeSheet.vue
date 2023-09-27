@@ -1,6 +1,6 @@
 <template>
     <v-container>
-    <v-row justify="center">
+    <v-row>
       <v-dialog
         v-model="dialog"
         persistent
@@ -185,8 +185,8 @@
         
         //const dataInStringFormat = localStorage.getItem('weeklyData')
         //const weeklyData = JSON.parse(dataInStringFormat) ;       
-      },
-
+      },                                                
+                                                                                                                                                                                                                                                                                                                                                                                                      
       mounted(){
         this.getTimeSheet()
       },

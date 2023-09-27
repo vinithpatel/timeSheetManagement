@@ -7,6 +7,11 @@
         height="50"
         >
         <v-toolbar-title>Employee TimeSheet</v-toolbar-title>
+        <v-toolbar-items>
+          <v-btn @click="exportMonthly">
+            Export
+          </v-btn>
+        </v-toolbar-items>
       </v-toolbar>
         <v-card-title >
           <v-row align="end">
@@ -180,6 +185,8 @@ import {subDays, subYears, format} from 'date-fns'
 import DateRange from "./DateRange.vue" 
 import WeekSheet from "./WeekSheet.vue" ;
 import TimesheetStatus from "./TimesheetStatus.vue"
+import jsPDF from "jspdf" ;
+import "jspdf-autotable";
 
   export default {
   name:"TimeSheet",
@@ -359,6 +366,63 @@ import TimesheetStatus from "./TimesheetStatus.vue"
       updateDateRange(data){
         this.dateRange = data ;
       },
+
+      async exportMonthly(){
+        
+        //const {startDate, endDate} = this.getStartAndEndDate()
+
+        const url=`http://localhost:8001/timesheet/monthly_report/1001` ;
+
+        const options = {
+          method:"GET",
+          headers:{
+            'Content-Type':'application/json'
+          }
+        }
+
+        const response = await fetch(url, options) 
+
+        if(response.ok){
+          const data = await response.json();
+          this.downloadPDF(data)
+        }
+      },
+
+      async downloadPDF(data) {
+      // Create a new jsPDF instance
+          const doc = new jsPDF();
+
+          // Add content to the PDF (e.g., timesheet data)
+          //doc.text(`Employee ID : ${this.timeSheet.employeeId}`, 10, 10);
+          //doc.text(`Employee Name : ${this.timeSheet.employeeName}`, 10, 20);
+          //doc.text(`Period : ${this.getFormatedDateString(this.timeSheet.startDate)} - ${this.getFormatedDateString(this.timeSheet.endDate)}`, 10, 30) ;
+          // Add more text or data as needed...
+
+
+          const columns = ["Project Id", "Project Name", "Hours", "Cost"] ;
+
+          let totalCost = 0 ;
+          let totalHours = 0 ; 
+
+          const tableData = data.map(each => {
+                totalCost += each.cost ;
+                totalHours += each.total ;
+
+                return [each.projectId, each.projectName, each.total,  each.cost] ;
+          })
+
+          tableData.push(['Total', '', totalHours, totalCost]) ;
+
+          doc.autoTable({
+            head:[columns],
+            body:tableData,
+            startY:50, //adjust the vertical starting position
+          })
+
+            // Save the PDF
+          doc.save("monthly_timesheet_report.pdf");
+          this.$store.dispatch('showNotification', 'Pdf Downloading..')
+        },
 
       
     },

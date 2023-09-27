@@ -1,12 +1,18 @@
 <template>
     <div class="home-bg-container">
-    
+        <EmployeeTimesheet v-if="$store.state.isAdmin" />
+        <SearchTimesheet v-else />
     </div>           
 </template>
 
 <script>
+    import EmployeeTimesheet from "./EmployeeTimesheet.vue"
+    import SearchTimesheet from "./SearchTimesheet.vue"
+
     export default({
-               
+         components:{
+            EmployeeTimesheet, SearchTimesheet
+         }
     })
 </script>
 

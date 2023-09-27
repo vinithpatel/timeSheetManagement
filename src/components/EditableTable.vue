@@ -17,7 +17,7 @@
                 variant="outlined" 
                 color="#b93bd9"
                 v-bind="props"
-                v-bind:disabled="!isSaved || isMoreEightHours || getTotal > 40 || isTimeSheetValid"
+                v-bind:disabled="!isSaved || isMoreEightHours || getTotal < 40 || getTotal > 40 || isTimeSheetValid"
                 >
                     Review and Submit
                 </v-btn>
@@ -79,14 +79,13 @@
                         <div class="mt-6 mb-6" >
                             <v-select
                             label="Select Project"
-                            :items="projectList"
-                            item-title="projectName"
-                            item-value="projectId"
+                            :items="localProjectsList"
                             variant="outlined"
-                            :model-value="rowObj.projectId"
+                            :model-value="rowObj.projectName"
                             hide-details
-                            @update:model-value="setRowValue($event,{rowId:rowObj.id, name:'projectId'})"              
-                            ></v-select> 
+                            @update:model-value="setProjectValue($event,{rowId:rowObj.id, name:'projectName'})"              
+                            ></v-select>
+                            
                         </div>
                     </td>
                     <td class="text-center pa-1" >
@@ -222,13 +221,13 @@
             </v-table>
         </v-row>
         <div class="mt-4 d-flex flex-row align-center justify-space-between">
-            <v-btn color="#0047ba" prepend-icon="mdi-plus" @click="addNewRow">
+            <v-btn v-if="timeSheetList.length < projectList.length" color="#0047ba" prepend-icon="mdi-plus"  @click="addNewRow" >
                   New Row
             </v-btn>
             
             <div>
                 <p class="error-message">*Maxmium 8 hours per day allowed</p>
-                <p class="error-message">*Maximum 40 hours per week allowed</p>
+                <p class="error-message">*40 hours per week allowed</p>
             </div>
         </div>
         
@@ -251,6 +250,7 @@
                     saveLodaing:false ,
                     isSaved: true ,
                     timeSheetList:[],
+                    localProjectsList:[],
                     submitLoading:false ,
                     daysList:['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'satuarday', 'sunday'],
                 }
@@ -265,7 +265,12 @@
             timeSheetObj(newValue){
                 this.sheetObj = newValue ;
                 this.getTimeSheetData()
+            },
+            
+            timeSheetList(){
+                this.updateLocalProjectList()
             }
+
         },
 
         components:{
@@ -305,18 +310,13 @@
                 }
 
                 return true
-            }
+            },
+
         },
 
         methods:{
-            checkDropDown(obj){
 
-                console.log(obj.rowId, obj.name) ;
-                console.log(this.selectValue) ;
-
-            },
-
-            restrictChar(event, data){
+        restrictChar(event, data){
                 
                 let value = event.target.value ;
           
@@ -340,9 +340,9 @@
                 */
 
                 this.setRowValue(value, data) ;
-            },
+        },
 
-            isTotalMoreThanEight(value,data){
+        isTotalMoreThanEight(value,data){
                 const {rowId, name} = data ;
 
                 const copyOfList = this.timeSheetList.map((eachObj) => {
@@ -363,9 +363,9 @@
 
                 return totalHours > 8 ;
 
-            },
+        },
 
-            getTotalHoursOfDay(dayName){
+        getTotalHoursOfDay(dayName){
                 
                 const list = this.timeSheetList;
 
@@ -378,7 +378,7 @@
                 
             },
 
-            addNewRow(){
+        addNewRow(){
                 const newRow = {
                     id:uuidV4(),
                     projectId:null,
@@ -396,16 +396,21 @@
 
                 this.timeSheetList = [...this.timeSheetList, newRow] ;
                 //this.$store.dispatch('createNewRow')
-            },
+        },
 
+        setProjectValue(projectName, obj){
+            const projectObj = this.projectList.find(each => each.projectName === projectName)
 
-            setRowValue(value, obj){
+            console.log(projectObj.projectId)
+            console.log(projectObj.projectName)
+
+            this.setRowValue(projectObj.projectId, {...obj,name:'projectId'}) ; //overwring the obj 
+            this.setRowValue(projectObj.projectName, obj) ;
+            this.updateLocalProjectList()
+        },
+
+        setRowValue(value, obj){
                 const {rowId, name} = obj ;
-
-                console.log(value) ;
-
-                console.log(value) ;
-                console.log(obj) ;
                 
                 const row = this.timeSheetList.find((each) => each.id === rowId)
 
@@ -413,10 +418,21 @@
                     row[name] = value ;
                 }
 
+                console.log(row) ;
+
                 this.isSaved = false ;
                 
-            },
+        },
 
+        updateLocalProjectList(){
+            const filterList = this.projectList.filter((eachObj) => {
+                    const condition = this.timeSheetList.every(timeSheetObj => timeSheetObj.projectId !== eachObj.projectId)
+                    console.log(condition) ;
+                    return condition
+            })
+        
+            this.localProjectsList =  filterList.map(each => each.projectName) ;
+        },
             
         totalHoursOnProject(rowObj){     
 
@@ -433,10 +449,11 @@
         },
 
         async getProjectData(){
-                this.$store.dispatch('getProjectData') 
+                await this.$store.dispatch('getProjectData') 
+                this.localProjectsList = this.projectList.map(each => each.projectName);
         },
 
-            async getTimeSheetData(){
+        async getTimeSheetData(){
                 const url = `http://localhost:8001/timesheet/${this.sheetObj.timeSheetId}` ;
                 const options = {
                     method:"GET",
@@ -457,7 +474,7 @@
                         
                     }
                 }
-            },
+        },
 
             async onClickSave(){
                 this.saveLodaing = true;
@@ -506,10 +523,10 @@
 
         },
 
-        mounted(){
+        created(){
             this.getProjectData() ;
             this.getTimeSheetData() ;
-        }
+        },
     })
 </script>
 

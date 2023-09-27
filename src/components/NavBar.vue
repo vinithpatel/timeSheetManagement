@@ -31,14 +31,14 @@
                                 </v-list-item-title>
                                 </v-list-item>
 
-                                <v-list-item >
+                                <v-list-item v-if="!isAdmin">
                                     <v-list-item-title>
                                         <router-link to="/search_timesheet">
                                             <v-btn
                                                     variant="text"
                                                     color="primary"
                                                 >
-                                                    Search TimeSheet
+                                                    Search Timesheet
                                             </v-btn> 
                                         </router-link>
                                     </v-list-item-title>
@@ -51,11 +51,25 @@
                                                 variant="text"
                                                 color="primary"
                                                 >
-                                                Employee TimeSheet
+                                                Employee Timesheet
                                             </v-btn>
                                         </router-link>
                                     </v-list-item-title>
                                 </v-list-item>
+
+                                <v-list-item v-if="isAdmin">
+                                    <v-list-item-title>
+                                        <router-link to="/export">
+                                            <v-btn
+                                                variant="text"
+                                                color="primary"
+                                                >
+                                                Export Timesheet
+                                            </v-btn>
+                                        </router-link>
+                                    </v-list-item-title>
+                                </v-list-item>
+
                             </v-list>
                         </v-menu>                        
                     </div>

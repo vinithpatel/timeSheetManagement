@@ -5,7 +5,8 @@ import store from "./store/index.js"
 import LoginVue from "./components/LoginVue.vue"
 import HomeVue from "./components/HomeVue.vue"
 import EmployeeTimesheet from "./components/EmployeeTimesheet.vue"
-import SearchTimesheet from "./components/SearchTimesheet"
+import SearchTimesheet from "./components/SearchTimesheet.vue"
+import ExportComponent from "./components/ExportComponent.vue" ;
 
 const router = createRouter({
     history:createWebHistory(),
@@ -26,6 +27,12 @@ const router = createRouter({
         {
             name:"Search TimeSheet",
             path:'/search_timesheet', component:SearchTimesheet
+        },
+
+        {
+            name:"Export" ,
+            path:'/export',
+            component:ExportComponent,
         }
     ]
 })
