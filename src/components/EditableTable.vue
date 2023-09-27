@@ -60,9 +60,6 @@
                         {{dateFormat}}
                     </th>
 
-                    <th class="pa-0" >
-
-                    </th>
 
                     <th style="font-size:14px; font-weight:bold; color:black;">
                         Total:
@@ -213,35 +210,6 @@
                     </InputField>
                     </td>
 
-                    <td class="pa-0 text-center" >
-                        <v-dialog width="500">
-                            <template v-slot:activator="{ props }">
-                                <v-btn v-bind="props" variant="text" icon="mdi-comment" size="small"></v-btn>
-                            </template>
-
-                            <template v-slot:default="{ isActive }">
-                                <v-card title="Add Comment">
-                                <v-textarea 
-                                variant="outlined" 
-                                :model-value="rowObj.comment" 
-                                @input = "setRowValue($event.target.value,{rowId:rowObj.id,name:'comment'})">
-                                    
-                                </v-textarea>
-
-                                <v-card-actions>
-                                    <v-spacer></v-spacer>
-
-                                    <v-btn
-                                    text="Save Changes"
-                                    @click="isActive.value = false"
-                                    color="#4287f5"
-                                    ></v-btn>
-                                </v-card-actions>
-                                </v-card>
-                            </template>
-                        </v-dialog>
-                    </td>
-
                     <td class="text-center">
                         <p>
                             {{ totalHoursOnProject(rowObj) }}
@@ -269,9 +237,6 @@
                         </div>
                     </td>
                    
-                    <td>
-                        <!-- empy-->
-                    </td>
 
                     <td class="text-center" >
                         <p v-bind:class="getTotal > 40 ? 'error' : ''" >{{ getTotal}}</p>
@@ -454,7 +419,6 @@
                     satuarday:null,
                     sunday:null,
                     total:null,
-                    comment:null,
                     mondayComment:null,
                     tuesdayComment:null,
                     wednesdayComment:null,

@@ -10,9 +10,7 @@
                     <th style="font-size:13px;" class="text-left" v-for="dateFormat in $store.state.daysOfWeek" v-bind:key="dateFormat">
                         {{dateFormat}}
                     </th>
-                    <th>
-
-                    </th>
+                   
                     <th style="font-size:14px; font-weight:bold; color:black;">
                         Total:
                     </th>
@@ -52,9 +50,6 @@
                         {{ checkAndGetValue(rowObj.sunday) }}
                     </td>
 
-                    <td class="pa-0 text-center" >
-                        <CommentPopup :comment="rowObj.comment" />
-                    </td>
 
                     <td class="text-center">
                         <p>
@@ -90,9 +85,7 @@
                     <td class="text-center" >
                         {{ getTotalHoursOfDay('sunday') }}
                     </td>
-                    <td>
-                        
-                    </td>
+                    
                     <td class="text-center" >
                         {{ getTotal}}
                     </td>
@@ -105,7 +98,7 @@
 
 <script>
     import {mapState} from "vuex" 
-    import CommentPopup from "./CommentPopup.vue"
+    //import CommentPopup from "./CommentPopup.vue"
 
     export default({
         data(){
@@ -121,7 +114,7 @@
         ],
 
         components:{
-            CommentPopup,
+           // CommentPopup,
         },
 
         watch:{

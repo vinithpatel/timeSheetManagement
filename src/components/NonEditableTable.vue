@@ -15,9 +15,6 @@
                         {{dateFormat}}
                     </th>
 
-                    <th>
-
-                    </th>
 
                     <th style="font-size:14px; font-weight:bold; color:black;">
                         Total:
@@ -58,9 +55,6 @@
                         {{ checkAndGetValue(rowObj.sunday) }}
                     </td>
 
-                    <td class="pa-0 text-center" >
-                        <CommentPopup :comment="rowObj.comment" />
-                    </td>
 
                     <td class="text-center">
                         <p>
@@ -103,9 +97,6 @@
                         {{ getTotalHoursOfDay('sunday') }}
                     </td>
                     
-                    <td>
-
-                    </td>
                    
                     <td class="text-center" >
                         {{ getTotal}}
@@ -119,7 +110,7 @@
 </template>
 
 <script>
-    import CommentPopup from "./CommentPopup.vue"
+    //import CommentPopup from "./CommentPopup.vue"
 
     export default({
         data(){
@@ -138,7 +129,7 @@
         ],
 
         components:{
-            CommentPopup,
+            //CommentPopup,
         },
 
         watch:{
