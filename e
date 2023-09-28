@@ -1,0 +1,41 @@
+[33mcommit db1691dbdb9c807962eaac1d4fff62a600ef5c5b[m[33m ([m[1;36mHEAD -> [m[1;32mmaster[m[33m)[m
+Author: vinith patel <viniththammala12@gmail.com>
+Date:   Wed Sep 27 22:49:03 2023 +0530
+
+    weekly comment option removed
+
+[33mcommit 7c9662b4fdefae63a2ae40361f424c7050a3ff1b[m
+Author: vinith patel <viniththammala12@gmail.com>
+Date:   Wed Sep 27 22:37:17 2023 +0530
+
+    comment added for each project and each day in submit timehseet view
+
+[33mcommit 882df5ffd93ee817cd085922bb5e5f2091405fa4[m[33m ([m[1;31morigin/master[m[33m)[m
+Author: vinith patel <viniththammala12@gmail.com>
+Date:   Wed Sep 27 16:28:19 2023 +0530
+
+    added Export to pdf functionality
+
+[33mcommit ea386eda22d81450c9bafb7635a7a64ec41523ed[m
+Author: vinith patel <viniththammala12@gmail.com>
+Date:   Mon Sep 25 13:18:53 2023 +0530
+
+    added approve, deny, reopen  email feature and bug fixes done
+
+[33mcommit 1348cb196a7c54bb5ff6eb47dace62bc3491efc1[m
+Author: vinith kumar <viniththammala12@gmail.com>
+Date:   Thu Sep 21 12:47:36 2023 +0530
+
+    admin actions added
+
+[33mcommit 665584069cecfeecc74297bd35a7a5527de2ed7d[m
+Author: vinith kumar <viniththammala12@gmail.com>
+Date:   Tue Sep 19 22:06:51 2023 +0530
+
+    second commit
+
+[33mcommit 0146d9dd6454556aad21a119d878cc01ab0abd83[m
+Author: vinith kumar <viniththammala12@gmail.com>
+Date:   Thu Sep 14 11:42:51 2023 +0530
+
+    initialization of project
