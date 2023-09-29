@@ -7,11 +7,7 @@
         height="50"
         >
         <v-toolbar-title>Employee TimeSheet</v-toolbar-title>
-        <v-toolbar-items>
-          <v-btn @click="exportMonthly">
-            Export
-          </v-btn>
-        </v-toolbar-items>
+        
       </v-toolbar>
         <v-card-title >
           <v-row align="end">
@@ -158,9 +154,7 @@
                   
                   <td class="text-center">
                     <TimesheetStatus :status="item.status" />
-                  </td>                  
-
-                  
+                  </td>                                  
                 </tr>
 
               </tbody>

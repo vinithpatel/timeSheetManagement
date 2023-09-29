@@ -6,7 +6,7 @@
         :timeout="timeout"
         
       >
-        {{ notificationObj.message }}
+        {{ notificationObj.message  }}
   
         <template v-slot:actions>
           <v-btn
@@ -42,7 +42,9 @@
         closeSnackBar(){
             this.hideNotification() ;
         }
-    }
+    },
+
+    
     }
 </script>
 

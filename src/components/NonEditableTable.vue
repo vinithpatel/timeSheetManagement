@@ -1,11 +1,11 @@
 <template>
     <div>
-        <div v-if="loading" class="d-flex flex-row align-center justify-center" style="height:200px">
+        <div v-if="loading" class="w-100 d-flex flex-row align-center justify-center" style="height:200px">
             <v-progress-circular color="primary" indeterminate></v-progress-circular>
         </div>
         <v-container v-if="!loading">
-        <v-row>
-            <v-table >
+        <v-row >
+            <v-table>
                 <thead>
                 <tr>
                     <th class="text-left" width="250px">
@@ -188,7 +188,7 @@
             async getTimeSheetData(){
                 this.loading = true ;
 
-                const url = `http://localhost:8001/timesheet/${this.sheetObj.timeSheetId}` ;
+                const url = `http://localhost:8001/timesheet/projects/${this.sheetObj.timeSheetId}` ;
                 const options = {
                     method:"GET",
                     headers:{
@@ -202,9 +202,6 @@
                     const data = await response.json() ;
                     this.timeSheetList = data ;
 
-                    if(this.timeSheetList.length === 0){
-                        this.addNewRow()   
-                    }
                 }
                 }
                 catch(error){

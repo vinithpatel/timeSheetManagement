@@ -33,7 +33,7 @@
 
                                 <v-list-item v-if="!isAdmin">
                                     <v-list-item-title>
-                                        <router-link to="/search_timesheet">
+                                        <router-link to="/">
                                             <v-btn
                                                     variant="text"
                                                     color="primary"
@@ -46,7 +46,7 @@
 
                                 <v-list-item v-if="isAdmin">
                                     <v-list-item-title>
-                                        <router-link to="/employee_timesheet">
+                                        <router-link to="/">
                                             <v-btn
                                                 variant="text"
                                                 color="primary"

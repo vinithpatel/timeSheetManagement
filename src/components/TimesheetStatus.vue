@@ -4,7 +4,7 @@
         class="ma-2"
         :color="colorName"
         >
-        {{ status }}
+        {{ statusName }}
         </v-chip>
     </div>
 </template>
@@ -29,6 +29,20 @@ export default {
             }
 
             return ''
+        },
+
+        statusName(){
+            if(this.status === 'open'){
+                return "Open" ;
+            }else if(this.status === 'submited'){
+                return "Submited" ;
+            }else if(this.status === 'approved'){
+                return "Approved" ;
+            }else if(this.status === "denied"){
+                return "Denied" ;
+            }
+
+            return 'invalid'
         }
         
     }

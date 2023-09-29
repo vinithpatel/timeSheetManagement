@@ -4,9 +4,11 @@ import store from "./store/index.js"
 
 import LoginVue from "./components/LoginVue.vue"
 import HomeVue from "./components/HomeVue.vue"
-import EmployeeTimesheet from "./components/EmployeeTimesheet.vue"
+//import EmployeeTimesheet from "./components/EmployeeTimesheet.vue"
 import SearchTimesheet from "./components/SearchTimesheet.vue"
 import ExportComponent from "./components/ExportComponent.vue" ;
+import WeekSheetComponent from "./components/WeekSheetComponent.vue"
+import EmployeesComponent from "./components/EmployeesComponent.vue"
 
 const router = createRouter({
     history:createWebHistory(),
@@ -21,7 +23,7 @@ const router = createRouter({
         },
         {
             name:"Employee TimeSheet",
-            path:'/employee_timesheet', component:EmployeeTimesheet
+            path:'/employee_timesheet/:timeSheetId', component:WeekSheetComponent
         },
 
         {
@@ -33,6 +35,12 @@ const router = createRouter({
             name:"Export" ,
             path:'/export',
             component:ExportComponent,
+        },
+
+        {
+            name:"Employees",
+            path:"/employees",
+            component:EmployeesComponent,
         }
     ]
 })

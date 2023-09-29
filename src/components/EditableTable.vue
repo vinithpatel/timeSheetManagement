@@ -486,7 +486,7 @@
         },
 
         async getTimeSheetData(){
-                const url = `http://localhost:8001/timesheet/${this.sheetObj.timeSheetId}` ;
+                const url = `http://localhost:8001/timesheet/projects/${this.sheetObj.timeSheetId}` ;
                 const options = {
                     method:"GET",
                     headers:{

@@ -151,6 +151,7 @@ export default createStore({
             setTimeout(()=>{
                 store.commit('hideNotification') ;
             })
+            
         },
 
         hideNotification(store){
@@ -319,6 +320,7 @@ export default createStore({
         getFormatedDateString(){
             return (dateString) => {
                 const date = new Date(dateString) ;
+
 
                 const dateFormat = format(date, "dd, MMM yyyy") ;
                 
