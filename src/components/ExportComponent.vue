@@ -65,6 +65,21 @@
             </v-row>
             <v-row justify="center">
             <v-col cols="12" md="6">
+              <div>
+                <v-radio-group
+                  v-model="exportType"
+                  inline
+                >
+                  <v-radio
+                    label="PDF"
+                    value="pdf"
+                  ></v-radio>
+                  <v-radio
+                    label="EXCEL"
+                    value="excel"
+                  ></v-radio>
+                </v-radio-group>
+              </div>
               <div >
               <v-btn color="success" @click="onClickExportButton" :loading="exportLoading">
                 Export
@@ -74,16 +89,17 @@
             </v-col>
             
 
-            <v-col cols="12" md="12" v-if="timePeriod === 'customDate'">   
+            <!-- <v-col cols="12" md="12" v-if="timePeriod === 'customDate'">   
               <div class="d-flex flex-row align-center">
                   <DateRange v-on:updateDateRange="updateDateRange" />
                   <v-btn variant="text" icon="mdi mdi-magnify" class="mt-7" @click="onupdateInput">
                   </v-btn>
               </div>
-            </v-col>
+            </v-col> -->
 
             
             </v-row>
+            
           </v-card-text>         
           <v-card-actions>
             <v-spacer></v-spacer>
@@ -94,11 +110,12 @@
 </template>
 
   <script>
-    import DateRange from "./DateRange.vue" ;
+    //import DateRange from "./DateRange.vue" ;
     import {format, startOfWeek, addWeeks, addDays} from "date-fns" ;
     import jsPDF from "jspdf" ;
     import "jspdf-autotable";
     import {mapGetters} from "vuex" ;
+    import { utils, writeFile } from 'xlsx';
 
     export default {
       data(){
@@ -110,6 +127,7 @@
           emptyMsg:'',
           employeeIdMsg:'',
           employeeId:'',
+          exportType:null,
           timePeriodOptions:[
             {
               title:"Export By Week",
@@ -123,7 +141,7 @@
         })
       },
       components:{
-        DateRange,
+        //DateRange,
       },
 
       computed:{
@@ -166,8 +184,12 @@
               employeeData,
               data
             }
-
-            this.downloadPDF(obj) ;
+            if(this.exportType === 'pdf'){
+              this.downloadPDF(obj) ;
+            }else{
+              this.downloadExcel(obj) ;
+            }
+            
           }else{
             this.emptyMsg = 'No Data Availble'
           }
@@ -287,6 +309,17 @@
           
           this.$store.dispatch('showNotification', 'Pdf Downloading..')
         },
+
+        downloadExcel(obj){
+          const {employeeData, data} = obj ;
+          console.log(employeeData) ;
+
+          const ws = utils.json_to_sheet(data);
+          const wb = utils.book_new();
+          utils.book_append_sheet(wb, ws, "EmployeeData") ;
+          writeFile(wb, this.timePeriod === "week" ? 'weekly_timesheet_report.xlsx' : 'monthly_timesheet_report.xlsx') ;
+
+        }
 
       }
     }
