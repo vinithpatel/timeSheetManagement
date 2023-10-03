@@ -6,7 +6,7 @@
 </template>
 
 <script>
-    import EmployeeTimesheet from "./EmployeeTimesheet.vue"
+    import EmployeeTimesheet from "./EmployeeTimeSheet.vue"
     import SearchTimesheet from "./SearchTimesheet.vue"
 
     export default({

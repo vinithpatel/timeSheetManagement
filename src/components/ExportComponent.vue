@@ -312,14 +312,39 @@
 
         downloadExcel(obj){
           const {employeeData, data} = obj ;
-          console.log(employeeData) ;
 
-          const ws = utils.json_to_sheet(data);
+          let totalCost = 0 ;
+          let totalHours = 0 ;
+
+          const tableData = data.map(each => {
+                totalCost += each.cost ;
+                totalHours += each.total ;
+                console.log(each);
+
+                return [each.projectId, each.projectName, each.total,each.rate, each.cost] ;
+          })
+ 
+          const exportData = [
+            ["Employee Id",employeeData.employeeId],
+            ["Employee name",employeeData.employeeName],
+            ["Position",employeeData.position],
+            ["Period", this.getPeriod()],
+            [],
+            ["Project Id", "Project Name", "Hours","Rate", "Cost (Euros)"],
+            ...tableData,
+            ["Total", '', totalHours,'', totalCost]
+          ];
+ 
+         
+
+          console.log(exportData) ;
+
+          const ws = utils.json_to_sheet(exportData);
           const wb = utils.book_new();
           utils.book_append_sheet(wb, ws, "EmployeeData") ;
           writeFile(wb, this.timePeriod === "week" ? 'weekly_timesheet_report.xlsx' : 'monthly_timesheet_report.xlsx') ;
 
-        }
+        } 
 
       }
     }
