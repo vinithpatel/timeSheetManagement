@@ -9,6 +9,7 @@ import SearchTimesheet from "./components/SearchTimesheet.vue"
 import ExportComponent from "./components/ExportComponent.vue" ;
 import WeekSheetComponent from "./components/WeekSheetComponent.vue"
 import EmployeesComponent from "./components/EmployeesComponent.vue"
+import ProjectsComponent from "./components/ProjectsComponent.vue"
 
 const router = createRouter({
     history:createWebHistory(),
@@ -41,6 +42,12 @@ const router = createRouter({
             name:"Employees",
             path:"/employees",
             component:EmployeesComponent,
+        },
+
+        {
+            name:"Projects",
+            path:"/projects",
+            component:ProjectsComponent,
         }
     ]
 })
