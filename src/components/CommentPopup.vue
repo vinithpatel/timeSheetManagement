@@ -11,7 +11,7 @@
         </div>           
         </v-card>
         <v-dialog width="500" v-model="dialog">
-            <v-card title="Comment">
+            <v-card>
                 <v-card-text>
                     {{ comment }}
                 </v-card-text>
