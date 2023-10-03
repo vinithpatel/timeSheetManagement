@@ -52,7 +52,7 @@ export default {
   }),
 
   components:{
-   NavBar,NotificationBar 
+   //NavBar,NotificationBar 
   },
 
   computed:{
