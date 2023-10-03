@@ -319,6 +319,11 @@ export default createStore({
 
         getFormatedDateString(){
             return (dateString) => {
+
+                if(dateString === null || dateString === ''){
+                    return '-'
+                }
+
                 const date = new Date(dateString) ;
 
 
