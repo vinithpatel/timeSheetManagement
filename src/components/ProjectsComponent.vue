@@ -55,11 +55,11 @@
                     Type
                   </th>
 
-                  <th >
+                  <th class="text-center">
                     Start Date
                   </th>
 
-                  <th >
+                  <th class="text-center">
                     
                     End Date
                     
@@ -87,12 +87,19 @@
                   <td >{{ item.projectId }}</td>
                   <td>{{ item.projectName}}</td>
                   <td>{{ item.type }}</td>
-                  <td>{{ getFormatedDateString(item.startDate) }}</td>
-                  <td>{{ getFormatedDateString(item.endDate) }}</td>
+                  <td class="text-center" >{{ getFormatedDateString(item.startDate) }}</td>
+                  <td class="text-center" >{{ getFormatedDateString(item.endDate) }}</td>
                   <td><CommentPopup :comment="item.description" /></td>
                   
                   <td>{{ item.customer }}</td>
-                  <td>{{ item.cost }}</td>                    
+                  <td>{{ item.cost }}</td>
+                  <td>
+                    <DeleteProjectButton v-slot="{onOpenDialog}" @onRemoveProject="onRemoveProject" v-bind:projectId="item.projectId">
+                      <v-btn icon="mdi-delete" variant="text" color="#a11a1a" @click="onOpenDialog">
+                      
+                      </v-btn>
+                    </DeleteProjectButton>   
+                  </td>         
                 </tr>
 
               </tbody>
@@ -114,6 +121,7 @@
 <script>
   import { mapGetters } from 'vuex'
   import CommentPopup from './CommentPopup.vue'
+  import DeleteProjectButton from './DeleteProjectButton.vue'
 
   export default({
     data(){
@@ -125,7 +133,7 @@
     },
 
     components:{
-      CommentPopup
+      CommentPopup,DeleteProjectButton
     },
 
     computed:{
@@ -157,6 +165,28 @@
           
         }
       },
+
+      async onRemoveProject(projectId){
+          console.log("project delete")
+          console.log(projectId)
+
+          const url = `http://localhost:8001/project/delete/${projectId}`
+          const options = {
+            method:"DELETE",
+            headers:{
+              'Content-Type':'application/json'
+            }
+          }
+
+          const response = await fetch(url, options) ;
+
+          if(response.ok){
+            const data = await response.json() ;
+            console.log(data.message) ;
+            this.getProjectsList()
+          }
+      } 
+
     },
 
     mounted() {
