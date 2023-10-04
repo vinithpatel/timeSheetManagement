@@ -37,6 +37,10 @@
                 <v-list-item prepend-icon="mdi-account-supervisor" title="Employees" value="employees"></v-list-item>
               </router-link>
 
+              <router-link to="/customers" class="router-link">
+                <v-list-item prepend-icon="mdi-domain" title="Customers" value="customers"></v-list-item>
+              </router-link>
+
               <router-link to="/projects" class="router-link">
                   <v-list-item prepend-icon="mdi-file-multiple" title="Projects" value="projects"></v-list-item>
               </router-link>

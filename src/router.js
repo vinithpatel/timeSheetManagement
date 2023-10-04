@@ -10,6 +10,7 @@ import ExportComponent from "./components/ExportComponent.vue" ;
 import WeekSheetComponent from "./components/WeekSheetComponent.vue"
 import EmployeesComponent from "./components/EmployeesComponent.vue"
 import ProjectsComponent from "./components/ProjectsComponent.vue"
+import CustomersComponent from "./components/CustomersComponent.vue"
 
 const router = createRouter({
     history:createWebHistory(),
@@ -48,6 +49,12 @@ const router = createRouter({
             name:"Projects",
             path:"/projects",
             component:ProjectsComponent,
+        },
+
+        {
+            name:"Customers",
+            path:"/customers",
+            component:CustomersComponent,
         }
     ]
 })
