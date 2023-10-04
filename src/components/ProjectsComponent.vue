@@ -66,7 +66,7 @@
                     Description
                   </th>
                   
-                  <th class="text-center" >
+                  <th  >
                     Customer
                   </th>
 
@@ -96,11 +96,11 @@
                     </div>
                   </td>
                   <td>
-                    <DeleteProjectButton v-slot="{onOpenDialog}" @onRemoveProject="onRemoveProject" v-bind:projectId="item.projectId">
+                    <DeleteButton v-slot="{onOpenDialog}" @onRemove="onRemove" v-bind:id="item.projectId">
                       <v-btn icon="mdi-delete" variant="text" color="#a11a1a" @click="onOpenDialog">
                       
                       </v-btn>
-                    </DeleteProjectButton>   
+                    </DeleteButton>   
                   </td>         
                 </tr>
 
@@ -123,7 +123,7 @@
 <script>
   import { mapGetters } from 'vuex'
   import CommentPopup from './CommentPopup.vue'
-  import DeleteProjectButton from './DeleteProjectButton.vue'
+  import DeleteButton from './DeleteButton.vue'
   import NewProjectPopup from "./NewProjectPopup.vue"
 
   export default({
@@ -136,7 +136,7 @@
     },
 
     components:{
-      CommentPopup,DeleteProjectButton,NewProjectPopup
+      CommentPopup,DeleteButton,NewProjectPopup
     },
 
     computed:{
@@ -169,7 +169,7 @@
         }
       },
 
-      async onRemoveProject(projectId){
+      async onRemove(projectId){
           console.log("project delete")
           console.log(projectId)
 
