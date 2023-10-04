@@ -23,8 +23,7 @@ export default {
 
     methods:{
         
-        onDateChange(){
-           
+        onDateChange(){           
             this.$emit('updateDateRange', {startDate:new Date(this.startDate), endDate:new Date(this.endDate)}) ;
         }
     }

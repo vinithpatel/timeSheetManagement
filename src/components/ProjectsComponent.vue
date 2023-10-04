@@ -13,9 +13,7 @@
           <v-row justify="space-between" align="center">
           <v-col cols="12" md="6" >   
               <div class="d-flex flex-row align-center">
-                  <v-btn prepend-icon="mdi-plus" color="primary"  @click="onupdateInput">
-                    New
-                  </v-btn>
+                  <NewProjectPopup @getProjectsList="getProjectsList"/>
               </div>
           </v-col>
           <v-col cols="3">
@@ -92,7 +90,11 @@
                   <td><CommentPopup :comment="item.description" /></td>
                   
                   <td>{{ item.customer }}</td>
-                  <td>{{ item.cost }}</td>
+                  <td >
+                    <div class="d-flex flex-row aling-center">
+                      {{ item.cost }}<p v-if="item.cost !== null">({{ item.currency }})</p>
+                    </div>
+                  </td>
                   <td>
                     <DeleteProjectButton v-slot="{onOpenDialog}" @onRemoveProject="onRemoveProject" v-bind:projectId="item.projectId">
                       <v-btn icon="mdi-delete" variant="text" color="#a11a1a" @click="onOpenDialog">
@@ -122,6 +124,7 @@
   import { mapGetters } from 'vuex'
   import CommentPopup from './CommentPopup.vue'
   import DeleteProjectButton from './DeleteProjectButton.vue'
+  import NewProjectPopup from "./NewProjectPopup.vue"
 
   export default({
     data(){
@@ -133,7 +136,7 @@
     },
 
     components:{
-      CommentPopup,DeleteProjectButton
+      CommentPopup,DeleteProjectButton,NewProjectPopup
     },
 
     computed:{
