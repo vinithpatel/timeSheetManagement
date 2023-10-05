@@ -45,11 +45,15 @@
                   </th>
 
                   <th >
-                    name
+                    Name
                   </th>
 
                   <th >
-                    email
+                    Email
+                  </th>
+
+                  <th>
+                    Contact Person
                   </th>
 
                   <th>
@@ -72,6 +76,7 @@
                   <td >{{ item.customerId }}</td>
                   <td>{{ item.name}}</td>
                   <td>{{ item.email }}</td>
+                  <td>{{ item.contactPerson }}</td>
                   <td>{{ item.contactNumber }}</td>
                   
                   <td><CommentPopup :comment="item.address" /></td>

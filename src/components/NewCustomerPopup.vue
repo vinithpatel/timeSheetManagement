@@ -35,6 +35,19 @@
                         ></v-text-field>
                     </v-col>
 
+                    <v-col>
+                        <v-text-field
+                            density="compact"
+                            variant="outlined"
+                            label="Contact Person"
+
+                            :rules="[rules.required]"
+                            placeholder="Contact Person"
+                            v-model="contactPerson"
+                                                       
+                        ></v-text-field>
+                    </v-col>
+
                     <v-col cols="4">
                         <v-text-field
                             density="compact"
@@ -113,6 +126,7 @@
                 name: null,
                 number:null,
                 email:null,
+                contactPerson:null,
 
                 addLoading:false,
                 rules: {
@@ -147,6 +161,7 @@
 
                 const data = {
                     name:this.name,
+                    contactPerson:this.contactPerson,
                     contactNumber:this.number,
                     email:this.email,
                     address:this.address
