@@ -91,8 +91,9 @@
                   
                   <td>{{ item.customer }}</td>
                   <td >
-                    <div class="d-flex flex-row aling-center">
-                      {{ item.cost }}<p v-if="item.cost !== null">({{ item.currency }})</p>
+                    <div >
+                      <div class="d-flex flex-row aling-center">{{ item.cost }}<p v-if="item.cost !== null">({{ item.currency }})</p></div>
+                      <div v-if="item.cost === null && item.type==='Billable'" style="font-size:12px;">Time & Material</div>
                     </div>
                   </td>
                   <td>

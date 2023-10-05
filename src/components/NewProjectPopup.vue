@@ -49,19 +49,36 @@
                 </v-row>
                     
                 <v-row v-if="projectType === 'Billable'">
-                    <v-col cols="4">
-                            <v-text-field
+                    <v-col cols="3">
+                            <v-select
                                 density="compact"
                                 variant="outlined"
                                 
-                                :rules="projectNameRules"
-                                placeholder="Customer"
+                                :items="customersList"
+                                item-title="name"
+                                item-value="customerId"
+                                placeholder="Customers"
                                 v-model="customerId"
                                                         
-                            ></v-text-field>
+                            ></v-select>
                     </v-col>
 
-                    <v-col cols="4">
+                    <v-col cols="3">
+                        <v-select
+                                density="compact"
+                                variant="outlined"
+                                
+                                :items="['Fixed Cost', 'Time & Material']"
+                                item-title="name"
+                                item-value="customerId"
+                                placeholder="Cost Type"
+                                v-model="costType"
+                        >
+
+                        </v-select>
+                    </v-col>
+
+                    <v-col cols="3" v-if="costType ==='Fixed Cost'">
                             <v-text-field
                                 density="compact"
                                 variant="outlined"
@@ -74,7 +91,7 @@
                             ></v-text-field>
                     </v-col>
 
-                    <v-col cols="3">
+                    <v-col cols="3" v-if="costType ==='Fixed Cost'">
                         <v-select
                             density="compact"
                             variant="outlined"
@@ -153,6 +170,7 @@
                 }
             ],
             projectType:null,
+
             projectTypeRules:[
                 value => {
 
@@ -163,7 +181,11 @@
                     return true;
                 }
             ],
+
+            costType:null,
             customerId:null,
+
+            customersList:[],
             
             cost:null,
             currency:null,
@@ -192,8 +214,8 @@
                 projectName:this.projectName,
                 projectType:this.projectType,
                 customerId:this.projectType === 'Billable'? this.customerId : null,
-                cost:this.projectType === 'Billable' ? this.cost : null,
-                currency:this.projectType === 'Billable' ? this.currency : null,
+                cost:this.costType === 'Fixed Cost' && this.projectType !== "Non-Billable" ? this.cost : null,
+                currency:this.costType === 'Fixed Cost' && this.projectType !== "Non-Billable" ? this.currency : null,
                 description:this.description,
                 startDate:this.startDate,
                 endDate:this.endDate
@@ -218,10 +240,41 @@
                 this.addLoading = false ;
 
                 this.dialog = false;
+                this.projectName = null
+                this.projectType = null
+                this.customerId = null
+                this.cost = null
+                this.currency = null
+                this.description = null ;
+                this.startDate=null ;
+                this.endDate = null ;
+                
                 this.$emit('getProjectsList') ;
             }
 
+        },
+
+        async getCustomersList(){
+                const url = `http://localhost:8001/customers/`
+
+                const options = {
+                method:"GET",
+                headers:{
+                    'Content-Type':"application/json"
+                }
+                }
+
+                const response = await fetch(url, options) ;
+                if(response.ok){
+                    const data = await response.json() ;
+                    this.customersList = data ;
+                
+                }
         }
+    },
+
+    created(){
+        this.getCustomersList() ;
     }
 })
 </script>
