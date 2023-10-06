@@ -1,6 +1,6 @@
 <template>
-  <v-container fluid class="w-100 h-100" >
-    <v-card class="h-100" variant="elevated" elevation="10">
+  <v-container fluid  class="w-100" style="height: 100vh;" >
+    <v-card class="h-100 overflow-y-auto" variant="elevated" elevation="10" >
         <v-toolbar
         dark
         color="#6a70eb"
@@ -35,6 +35,9 @@
                       @input="onupdateInput"
                     ></v-text-field>
                 </v-col>   
+        </v-row>
+        <v-row>
+          <NewEmployeePopup @getEmployees="getEmployees"/>
         </v-row>
         </v-card-title>
         <v-card-text>
@@ -78,6 +81,7 @@
 
 <script>
 import ProjectAssignment from './ProjectAssignment.vue'
+import NewEmployeePopup from './NewEmployeePopup.vue'
 
 export default {
 
@@ -91,7 +95,7 @@ export default {
   },
 
   components:{
-      ProjectAssignment
+      ProjectAssignment,NewEmployeePopup
   },
 
   methods:{
