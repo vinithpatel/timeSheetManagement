@@ -93,7 +93,7 @@
                   <td >
                     <div >
                       <div class="d-flex flex-row aling-center">{{ item.cost }}<p v-if="item.cost !== null">({{ item.currency }})</p></div>
-                      <div v-if="item.cost === null && item.type==='Billable'" style="font-size:12px;">Time & Material</div>
+                      <div v-if="item.type==='Billable' && item.costType==='Time & Material'" style="font-size:12px;">Time & Material</div>
                     </div>
                   </td>
                   <td>
@@ -101,7 +101,7 @@
                       <v-btn icon="mdi-delete" variant="text" color="#a11a1a" @click="onOpenDialog">
                       
                       </v-btn>
-                    </DeleteButton>   
+                    </DeleteButton> 
                   </td>         
                 </tr>
 

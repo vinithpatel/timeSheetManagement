@@ -214,6 +214,7 @@
                 projectName:this.projectName,
                 projectType:this.projectType,
                 customerId:this.projectType === 'Billable'? this.customerId : null,
+                costType:this.projectType === 'Billable'? this.costType : null,
                 cost:this.costType === 'Fixed Cost' && this.projectType !== "Non-Billable" ? this.cost : null,
                 currency:this.costType === 'Fixed Cost' && this.projectType !== "Non-Billable" ? this.currency : null,
                 description:this.description,
