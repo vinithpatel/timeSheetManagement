@@ -1,25 +1,14 @@
 <template>
-    <v-container>
-    <v-row>
-      <v-dialog
-        v-model="dialog"
-        persistent
-        width="1024"
-      >
-      
-        <template v-slot:activator="{ props }">
-          <v-btn
-            variant="text"
-            color="primary"
-            v-bind="props"
-            v-on:click="$store.commit('updateDaysOfWeek')"
-          >
-            Submit TimeSheet
-          </v-btn>          
-        </template>
+        <v-card width="1080" max-height="600" variant="elevated" elevation="10">
+          <v-toolbar
+        dark
+        color="#6a70eb"
+        height="50"
+        >
+        <v-toolbar-title>Submit Timesheet</v-toolbar-title>
         
-        <v-card>
-          <v-card-title>
+        </v-toolbar>
+          <v-card-title >
             <div class="w-100 d-flex flex-row justify-space-between">
               <span class="text-h5">TimeSheet</span>
 
@@ -28,6 +17,12 @@
               <input class="week-calendar-input" type="week" v-model="calendarValue"
                 @change="onChangeWeek"
               />
+            </div>
+
+            <div v-if="timeSheetObj !== undefined && timeSheetObj.status === 'denied'" class="w-100 mt-5">
+              <v-btn color="#a83299" :loading="createSheetLoading" @click="onClickReCreate">
+                Re-create Sheet
+              </v-btn>
             </div>
             
           </v-card-title>
@@ -49,19 +44,9 @@
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn
-              color="blue-darken-1"
-              variant="text"
-              @click="dialog = false"
-            >
-              Cancel
-            </v-btn>
             
           </v-card-actions>
         </v-card>
-      </v-dialog>
-    </v-row>
-</v-container>
 
   </template>
 
@@ -77,7 +62,7 @@
     name:"TimeSheet",
 
       data: () => ({
-        dialog: false,
+       
         createSheetLoading:false,
         calendarValue:"",
         timeSheetObj:undefined,
@@ -164,24 +149,49 @@
           }
 
           this.createSheetLoading = false;
+        },
+
+        async onClickReCreate(){
+          this.createSheetLoading = true ;
+          const url = `http://localhost:8001/timesheet/recreate/${this.timeSheetObj.timeSheetId}`
+
+          const response = await fetch(url, {method:"POST", headers:{'Content-Type':'application/json'}}) ;
+          
+          if(response.ok){
+            const data = await response.json() ;
+            console.log(data.message) ;
+
+            this.getTimeSheet() ;
+          }
+
+          this.createSheetLoading = false ;
+
         }
         
       },
 
       created(){
-        const currentDate = new Date() ;
-
-        // format Value ex:2023-W36
-
-        const weekViewFormat = `${currentDate.getFullYear()}-W${getWeek(currentDate, {weekStartsOn:1, firstWeekContainsDate:2})}` ;
         
-        //setting up the calendarValue data property to show current week in calendar
-        this.calendarValue = weekViewFormat ;
 
-        console.log()
+        if(this.$route.query.calendarValue !== undefined){
+          this.calendarValue = this.$route.query.calendarValue ;
+        }
+        else{
+
+          const currentDate = new Date() ;
+
+          // format Value ex:2023-W36
+
+          const weekViewFormat = `${currentDate.getFullYear()}-W${getWeek(currentDate, {weekStartsOn:1, firstWeekContainsDate:2})}` ;
+          
+          //setting up the calendarValue data property to show current week in calendar
+          this.calendarValue = weekViewFormat ;
+
+        }
+
 
         // passing weekFormat to store state 
-        this.$store.dispatch('updateSelectedWeek', weekViewFormat) ;
+        this.$store.dispatch('updateSelectedWeek', this.calendarValue) ;
         
         //const dataInStringFormat = localStorage.getItem('weeklyData')
         //const weeklyData = JSON.parse(dataInStringFormat) ;       
@@ -189,6 +199,7 @@
                                                                                                                                                                                                                                                                                                                                                                                                       
       mounted(){
         this.getTimeSheet()
+        this.$store.commit('updateDaysOfWeek')
       },
     }
   </script>

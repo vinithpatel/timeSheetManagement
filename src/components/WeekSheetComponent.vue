@@ -39,11 +39,11 @@
                 <AdminButton color="green" text="Approve" @onClickApprove="onClickApprove" :loading="approveLoading" />
             </div>
 
-            <div v-if="!isAdmin && timeSheet.status === 'open'" >
+            <!-- <div v-if="!isAdmin && timeSheet.status === 'open'" >
                 <v-btn variant="outlined" color="green" @click="onClickSubmit" :loading="submitLoading" >
                   Submit
                 </v-btn>
-            </div>
+            </div> -->
             
             </v-card-actions>
         </v-card>

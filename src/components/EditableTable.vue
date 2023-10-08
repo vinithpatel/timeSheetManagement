@@ -49,7 +49,7 @@
         </div>
     <v-container >
         <v-row >
-            <v-table >
+            <v-table  height="400px">
                 <thead>
                 <tr>
                     <th class="text-left" width="250px" >

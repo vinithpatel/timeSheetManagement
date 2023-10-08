@@ -21,8 +21,10 @@
 
         <v-list density="compact" nav>
           <div class="mb-5">
-            <v-list-subheader class="text-subtitle-1">EMPLOYEE</v-list-subheader>      
-            <v-list-item prepend-icon="mdi-file-send" title="Submit Timesheet" value="home"><TimeSheet /></v-list-item>
+            <v-list-subheader class="text-subtitle-1">EMPLOYEE</v-list-subheader>
+            <router-link to="/submit_timesheet/" class="router-link">     
+              <v-list-item prepend-icon="mdi-file-send" title="Submit Timesheet" value="home"></v-list-item>
+            </router-link> 
             <router-link to="/" class="router-link">
               <v-list-item prepend-icon="mdi-text-box-search" title="Search Timesheet" value="searchTimesheet"></v-list-item>
             </router-link>
@@ -54,7 +56,7 @@
 </template>
 
 <script>
-  import TimeSheet from './TimeSheet.vue';
+  //import TimeSheet from './TimeSheet.vue';
   import {mapState} from "vuex"
     export default({
         data(){
@@ -64,7 +66,7 @@
         },
 
         components:{
-          TimeSheet,
+          
         },
 
         computed:{

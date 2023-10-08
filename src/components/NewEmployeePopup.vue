@@ -93,10 +93,12 @@
                             density="compact"
                             variant="outlined"
                             
-                            :items="['Human Resources(HR)', 'Payroll Department', 'Project Managers', 'Senior Management', 'Architectural Design','Cunsulting Services', 'Traning and Education']"
+                            :items="departmentsList"
+                            item-value="departmentId"
+                            item-title="departmentName"
                             :rules="[rules.required]"
                             placeholder="Department"
-                            v-model="department"
+                            v-model="departmentId"
                                                        
                         ></v-select>
                     </v-col>
@@ -156,7 +158,9 @@
             doj:null,
             address:null,
             positionId:null,
-            department:null,
+            positionsList:[],
+            departmentId:null,
+            departmentsList:[],
 
             addLoading:false,
             rules: {
@@ -194,7 +198,7 @@
                 doj:this.doj,
                 positionId:this.positionId,
                 positionsList:[],
-                department:this.department,
+                departmentId:this.departmentId,
                 address:this.address,
             }
 
@@ -265,12 +269,32 @@
                 const data = await response.json() ;
                 this.positionsList = data ;
             }
-        }
+        },
+
+        async getDepartementsList(){
+            const url = `http://localhost:8001/departments`
+
+            const options = {
+                method:"GET",
+                headers:{
+                    'Content-Type':'application/json',
+                }
+            }
+
+            const response = await fetch(url, options)
+
+            if(response.ok){
+                const data = await response.json() ;
+                this.departmentsList = data ;
+            }
+        },
+
     },
 
     created(){
         this.getEmployeesList() ;
-        this.getPositionsList()
+        this.getPositionsList() ;
+        this.getDepartementsList() ;
     }
 })
 </script>

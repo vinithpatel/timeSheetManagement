@@ -50,14 +50,53 @@
                           </v-text-field>
                         </v-card-title>
                         <v-card-text>
+
                           <v-list v-if="!projectsLoading">
+
                             <v-list-item v-for="projectObj in distinctProjectsList"
                             :title="projectObj.projectName"
                             :key="projectObj.projectId"
                             append-icon="mdi-plus-box"
                             @click="onClickAddProject(projectObj)"
                             >
+                            <v-dialog v-model="assignProjectDialog" width="400" height="400">
+                                <v-card >
+                                    <v-card-title>
+                                      <div>
+                                        Project Name : {{ projectObj.projectName }}
+                                      </div>
+                                      <div>
+                                        Cost Type : {{ projectObj.costType }}
+                                      </div>
+                                    </v-card-title>
+                                    <v-card-text>
+                                      <div>
+                                        <v-select
+                                          variant="outlined"
+                                          placeholder="Select Role"
+                                          v-model="role"
+                                          
+                                          :rules="[value => value === null || value.length === 0 ? 'Required' : true]"
+                                        >
+
+                                        </v-select>
+                                        <v-text-field
+                                          variant="outlined"
+                                          placeholder="Cost Per Hour"
+                                          v-model="costPerHour"
+                                          type="number"
+                                          :rules="[value => value === null || value.length === 0 ? 'Required' : true]"
+                                        >
+
+                                        </v-text-field>
+                                      </div>
+                                    </v-card-text>
+                                </v-card>
+                            </v-dialog>
                             </v-list-item>
+
+
+
                             <v-list-item
                               title="No Projects Available"
                               v-if="distinctProjectsList.length === 0"
@@ -81,6 +120,7 @@
 
                         <v-card-text>
                           <v-list>
+                            
                             <v-list-item v-for="projectObj in employeeProjectsList"
                             :title="projectObj.projectName"
                             :key="projectObj.projectId"
@@ -88,6 +128,7 @@
                             @click="onClickRemoveProject(projectObj.projectId)"
                             >
                             </v-list-item>
+
                             <v-list-item
                               title="No Projects Available"
                               v-if="employeeProjectsList.length === 0"
@@ -118,6 +159,7 @@ export default {
     data(){
         return ({
             dialog:false,
+            assignProjectDialog:false,
             loading:false,
             projectsLoading:false,
             employeeProjectsLoading:false,
@@ -125,6 +167,8 @@ export default {
             projectsList:[],
             employeeProjectsList:[],
             searchProjectName:'',
+            costPerHour:null,
+            role:null,
         })
     },
 
@@ -148,7 +192,11 @@ export default {
       },
 
       onClickAddProject(projectObj){
-        this.employeeProjectsList.push(projectObj)
+        if(projectObj.costType === "Time & Material"){
+            this.assignProjectDialog = true ;
+        }else{
+          this.employeeProjectsList.push(projectObj)
+        }
       },
 
       onClickRemoveProject(projectId){

@@ -52,9 +52,18 @@
             </div>
 
             <div v-if="!isAdmin && timeSheet.status === 'open'" >
-                <v-btn variant="outlined" color="green" @click="onClickSubmit" :loading="submitLoading" >
-                  Submit
-                </v-btn>
+                <router-link :to="`submit_timesheet/?calendarValue=${timeSheet.week}`">
+                  <v-btn variant="outlined" color="green" >
+                    Edit & Submit
+                  </v-btn>
+                </router-link>
+            </div>
+            <div v-if="!isAdmin && timeSheet.status === 'denied'">
+              <router-link :to="`submit_timesheet/?calendarValue=${timeSheet.week}`">
+                  <v-btn variant="outlined" color="green" >
+                    Re-Open
+                  </v-btn>
+                </router-link>
             </div>
            
           </v-card-actions>
@@ -76,7 +85,6 @@
       data: () => ({
         dialog: false,
         isLoading:false,
-        submitLoading:false,
         approveLoading:false,
         denyLoading:false,
         openLoading:false,
@@ -129,25 +137,6 @@
             this.dialog = false ;
         },
 
-        async onClickSubmit(){
-
-              this.submitLoading = true ;
-
-                await this.$store.dispatch('submitTimeSheet', this.timeSheet.timeSheetId) ;       
-                await this.$store.dispatch('sendEmail', 
-                    {
-                        timeSheetId:this.timeSheet.timeSheetId,
-                        startDate:this.timeSheet.startDate,
-                        endDate:this.timeSheet.endDate ,
-                    }  
-                ) ;
-
-                this.$emit('getTimeSheets') ;
-
-                this.submitLoading = false ;
-                this.dialog = false ;
-                
-        },
 
         async onClickOpen(message){
           const {timeSheetId, employeeName, startDate, endDate} = this.timeSheet ;

@@ -11,6 +11,7 @@ import WeekSheetComponent from "./components/WeekSheetComponent.vue"
 import EmployeesComponent from "./components/EmployeesComponent.vue"
 import ProjectsComponent from "./components/ProjectsComponent.vue"
 import CustomersComponent from "./components/CustomersComponent.vue"
+import Timesheet from "./components/TimeSheet.vue"
 
 const router = createRouter({
     history:createWebHistory(),
@@ -22,6 +23,10 @@ const router = createRouter({
         {
             name:"Home",
             path:"/", component:HomeVue,
+        },
+        {
+            name:"Submit Timesheet",
+            path:"/submit_timesheet", component:Timesheet,
         },
         {
             name:"Employee TimeSheet",
