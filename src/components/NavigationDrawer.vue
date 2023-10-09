@@ -28,6 +28,11 @@
             <router-link to="/" class="router-link">
               <v-list-item prepend-icon="mdi-text-box-search" title="Search Timesheet" value="searchTimesheet"></v-list-item>
             </router-link>
+
+            <router-link to="/review_timesheets" class="router-link">
+              <v-list-item prepend-icon="mdi-file-check" title="Review Timesheets" value="reviewTimesheets"></v-list-item>
+            </router-link>
+
           </div>
           <div v-if="isAdmin">
               <v-list-subheader class="text-subtitle-1">Admin</v-list-subheader>      

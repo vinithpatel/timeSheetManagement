@@ -63,12 +63,28 @@
 
                 </v-row>
 
-                <v-row>
+                <v-row align="end">
                     <v-col  cols="4">
                         <div>
                             <label>Date of Joining</label>
                             <input type="date" class="date-input" placeholder="Date of Joining" v-model="doj" />
                         </div>
+                    </v-col>
+
+                    <v-col cols="4">
+                        <v-select
+                            density="compact"
+                            variant="outlined"
+                            
+                            :items="employeesList"
+                            item-value="employeeId"
+                            item-title="employeeName"
+                            :rules="[rules.required]"
+                            placeholder="Reporting Manager"
+                            v-model="reportingManagerId"
+                            hide-details
+                                                       
+                        ></v-select>
                     </v-col>
                 </v-row>
 
@@ -161,6 +177,8 @@
             positionsList:[],
             departmentId:null,
             departmentsList:[],
+            reportingManagerId:null,
+            employeesList:[],
 
             addLoading:false,
             rules: {
@@ -200,6 +218,7 @@
                 positionsList:[],
                 departmentId:this.departmentId,
                 address:this.address,
+                reportingManagerId:this.reportingManagerId
             }
 
             const options ={
@@ -236,7 +255,7 @@
         },
 
         async getEmployeesList(){
-                const url = `http://localhost:8001/customers/`
+                const url = `http://localhost:8001/employees/`
 
                 const options = {
                 method:"GET",
@@ -248,10 +267,11 @@
                 const response = await fetch(url, options) ;
                 if(response.ok){
                     const data = await response.json() ;
-                    this.customersList = data ;
+                    this.employeesList = data ;
                 
                 }
         },
+        
 
         async getPositionsList(){
             const url = `http://localhost:8001/positions`

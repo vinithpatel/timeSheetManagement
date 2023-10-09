@@ -12,6 +12,7 @@ import EmployeesComponent from "./components/EmployeesComponent.vue"
 import ProjectsComponent from "./components/ProjectsComponent.vue"
 import CustomersComponent from "./components/CustomersComponent.vue"
 import Timesheet from "./components/TimeSheet.vue"
+import ReviewTimesheet from "./components/ReviewTimesheet.vue"
 
 const router = createRouter({
     history:createWebHistory(),
@@ -60,6 +61,12 @@ const router = createRouter({
             name:"Customers",
             path:"/customers",
             component:CustomersComponent,
+        },
+
+        {
+            name:"Review Timesheet",
+            path:"/review_timesheets",
+            component:ReviewTimesheet,
         }
     ]
 })
