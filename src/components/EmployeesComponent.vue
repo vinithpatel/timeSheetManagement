@@ -54,11 +54,13 @@
             :rounded="true"
           >
     
-            <ProjectAssignment :employeeObj="item">
-              <template v-slot="{openDialog}">
-                <v-btn color="primary" @click="openDialog">Edit Projects</v-btn>
-              </template>
-            </ProjectAssignment>
+            <router-link :to="`project_assignment/${item.employeeId}`">
+              <v-row justify="end">
+                <v-col cols="2">
+                  <v-btn color="primary">Assign Projects</v-btn>
+                </v-col>
+              </v-row>
+            </router-link>
            
         </v-list-item>
           </v-list>
@@ -80,7 +82,7 @@
 </template>
 
 <script>
-import ProjectAssignment from './ProjectAssignment.vue'
+//import ProjectAssignment from './ProjectAssignment.vue'
 import NewEmployeePopup from './NewEmployeePopup.vue'
 
 export default {
@@ -95,7 +97,7 @@ export default {
   },
 
   components:{
-      ProjectAssignment,NewEmployeePopup
+      NewEmployeePopup,//ProjectAssignment
   },
 
   methods:{

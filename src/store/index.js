@@ -21,7 +21,26 @@ export default createStore({
         notificationObj:{
             show:false,
             message:'',
-        }
+        },
+
+        fieldRules:{
+
+            required(value){      
+                if (value === null || value === '') {
+                    return 'Required'
+                }
+                
+                return true;       
+            },
+
+            email(value){
+                if(value.includes('@') && value.includes('.com')){
+                    return true
+                }
+
+                return "Invalid Email Address"
+            },
+        },
 
     },
 
@@ -351,6 +370,8 @@ export default createStore({
                 if(response.ok){
                     return await response.json() ;
                 }
+
+                return {}
  
             }
         }
