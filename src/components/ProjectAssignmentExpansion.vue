@@ -27,8 +27,8 @@
                 type="number"
                 
                 :rules="[fieldRules.required]"
-                placeholder="cost"
-                v-model="projectDetails.cost"
+                placeholder="rate"
+                v-model="projectDetails.rate"
                                         
             ></v-text-field>
             </v-col>
@@ -84,7 +84,7 @@
                     startDate:this.projectData.startDate,
                     endDate:this.projectData.endDate,
                     roleId:this.projectData.roleId,
-                    cost:this.projectData.cost,
+                    rate:this.projectData.rate,
                     currency:this.projectData.currency,
                 },
 

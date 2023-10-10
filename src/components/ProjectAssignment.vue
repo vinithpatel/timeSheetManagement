@@ -114,7 +114,6 @@
                                             Remove
                                         </v-btn>
                                     </v-col>
-
                                   </v-row>
                                   
                               </ProjectAssignmentExpansion>

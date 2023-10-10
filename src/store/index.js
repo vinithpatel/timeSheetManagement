@@ -192,7 +192,7 @@ export default createStore({
         },
 
         async getProjectData(store){
-            const url = `http://localhost:8001/projects/${store.state.employeeId}`;
+            const url = `http://localhost:8001/projects/employee/${store.state.employeeId}`;
 
             const options = {
                 method:"GET",
