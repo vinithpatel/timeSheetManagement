@@ -105,7 +105,7 @@ export default {
 
         },
         async onClickApprove(message){
-          const {timeSheetId, employeeName, startDate, endDate} = this.timeSheet ;
+          const {timeSheetId, employeeName, startDate, endDate, officialMail} = this.timeSheet ;
 
             this.approveLoading = true ;
                
@@ -116,6 +116,7 @@ export default {
               startDate,
               endDate,
               message,
+              officialMail,
               action:'Approved',
             } )
                
@@ -145,7 +146,7 @@ export default {
         },
 
         async onClickOpen(message){
-          const {timeSheetId, employeeName, startDate, endDate} = this.timeSheet ;
+          const {timeSheetId, employeeName, startDate, endDate, officialMail} = this.timeSheet ;
 
             this.openLoading = true ;
 
@@ -156,6 +157,7 @@ export default {
               startDate,
               endDate,
               message,
+              officialMail,
               action:'Re-Opened',
             } )
 
@@ -167,7 +169,7 @@ export default {
 
         async onClickDeny(message){
 
-            const {timeSheetId, employeeName, startDate, endDate} = this.timeSheet ;
+            const {timeSheetId, employeeName, startDate, endDate,officialMail} = this.timeSheet ;
 
             this.denyLoading = true ;
 
@@ -178,6 +180,7 @@ export default {
               startDate,
               endDate,
               message,
+              officialMail,
               action:'Denied',
             } )      
 
@@ -191,7 +194,7 @@ export default {
     
 
     async mounted(){
-        
+
         await this.getTimeSheet()
         this.$store.dispatch('updateSelectedWeek', this.timeSheet.week) ;
     }

@@ -116,7 +116,7 @@
         },
 
         async onClickApprove(message){
-          const {timeSheetId, employeeName, startDate, endDate} = this.timeSheet ;
+          const {timeSheetId, employeeName, startDate, endDate,officialMail} = this.timeSheet ;
 
             this.approveLoading = true ;
                
@@ -127,6 +127,7 @@
               startDate,
               endDate,
               message,
+              officialMail,
               action:'Approved',
             } )
                
@@ -139,7 +140,7 @@
 
 
         async onClickOpen(message){
-          const {timeSheetId, employeeName, startDate, endDate} = this.timeSheet ;
+          const {timeSheetId, employeeName, startDate, endDate, officialMail} = this.timeSheet ;
 
             this.openLoading = true ;
 
@@ -150,6 +151,7 @@
               startDate,
               endDate,
               message,
+              officialMail,
               action:'Re-Opened',
             } )
 
@@ -161,7 +163,7 @@
 
         async onClickDeny(message){
 
-            const {timeSheetId, employeeName, startDate, endDate} = this.timeSheet ;
+            const {timeSheetId, employeeName, startDate, endDate,officialMail} = this.timeSheet ;
 
             this.denyLoading = true ;
 
@@ -172,6 +174,7 @@
               startDate,
               endDate,
               message,
+              officialMail,
               action:'Denied',
             } )      
 

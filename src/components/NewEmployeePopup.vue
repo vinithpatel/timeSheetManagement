@@ -26,7 +26,7 @@
                         <v-text-field
                             density="compact"
                             variant="outlined"
-                            
+                            label="Employee Name"
                             :rules="[rules.required]"
                             placeholder="Employee Name"
                             v-model="employeeName"
@@ -38,10 +38,10 @@
                         <v-text-field
                             density="compact"
                             variant="outlined"
-                            
+                            label="Contact Number"
                             type="number"
                             :rules="[rules.required]"
-                            placeholder="Cotact Number"
+                            placeholder="Contact Number"
                             v-model="contactNumber"
                                                        
                         ></v-text-field>
@@ -53,12 +53,26 @@
                             <v-text-field
                             density="compact"
                             variant="outlined"
-                            
+                            label="Personal Main Id"
                             :rules="[rules.required, rules.email]"
-                            placeholder="Email"
-                            v-model="email"
+                            placeholder="Personal Mail Id"
+                            v-model="personalMail"
                                                        
                         ></v-text-field>
+
+                    </v-col>
+
+                    <v-col cols="4">
+                            <v-text-field
+                            density="compact"
+                            variant="outlined"
+                            label="Official Mail Id"
+                            :rules="[rules.required, rules.email]"
+                            placeholder="Official Mail Id"
+                            v-model="officialMail"
+                                                       
+                        ></v-text-field>
+
                     </v-col>
 
                 </v-row>
@@ -75,7 +89,7 @@
                         <v-select
                             density="compact"
                             variant="outlined"
-                            
+                            label="Reporting Manger"
                             :items="employeesList"
                             item-value="employeeId"
                             item-title="employeeName"
@@ -170,7 +184,8 @@
             
             employeeName:null,
             contactNumber:null,
-            email:null,
+            personalMail:null,
+            officialMail:null,
             doj:null,
             address:null,
             positionId:null,
@@ -212,7 +227,8 @@
             const data = {
                 employeeName:this.employeeName,
                 contactNumber:this.contactNumber,
-                email:this.email,
+                personalMail:this.personalMail,
+                officailMail:this.officialMail,
                 doj:this.doj,
                 positionId:this.positionId,
                 positionsList:[],

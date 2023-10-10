@@ -7,6 +7,7 @@ import router from "../router.js" ;
 
 export default createStore({
     state:{
+        employeeDetails:{},
         employeeId:null,
         employeeName:'',
         email:'',
@@ -29,21 +30,17 @@ export default createStore({
         updateEmployeeDetailsAndLogin(state, obj){
             state.employeeId = obj.employeeId ;
             state.employeeName = obj.employeeName ;
-            state.email = obj.email ;
+            state.email = obj.officialMail ;
             state.isAdmin = obj.isAdmin ;
             state.isLogin = true ;
 
-            console.log(obj) ;
+            state.employeeDetails = obj ;
+            
         },
 
         updateLoginDetailsInLocal(state, obj){
-            const details = {
-                employeeId:obj.employeeId,
-                employeeName:obj.employeeName,
-                email:obj.email,
-                isAdmin:obj.isAdmin,
-            }
-            localStorage.setItem('employeeDetails', JSON.stringify(details)) ;
+            
+            localStorage.setItem('employeeDetails', JSON.stringify(obj)) ;
         },
 
         updateLoginDetailsInState(state){
@@ -56,6 +53,8 @@ export default createStore({
                 state.email = jsonData.email ;
                 state.isAdmin = jsonData.isAdmin ;
                 state.isLogin = true ;
+
+                state.employeeDetails = jsonData;
             }
         },
 
@@ -281,7 +280,7 @@ export default createStore({
                     timesheetId:timeSheetId,
                     startDate,
                     endDate,
-                    email:'pravin@theweplm.com',
+                    email:store.state.employeeDetails.reportingManagerMail
 
                 }, '75B7CIXrKgR0C1weF')
                 console.log( response)
@@ -292,7 +291,10 @@ export default createStore({
         },
 
         async sendEmailOnAction(store, obj){
-            const {timeSheetId, employeeName, startDate, endDate, message, action} = obj
+            const {timeSheetId, employeeName, startDate, endDate, message,officialMail, action} = obj
+
+            console.log(officialMail) ;
+            console.log(store.state.employeeDetails.officialMail) ;
 
             try{
                 await emailjs.send('service_evxhn1b', 'template_pdlg2yl', {
@@ -302,7 +304,8 @@ export default createStore({
                     startDate,
                     endDate,
                     message,
-                    email:'rajuraju187w1a@gmail.com',
+                    toMail:officialMail !== null ? officialMail : '',
+                    fromMail:store.state.employeeDetails.officialMail,
                 }, '75B7CIXrKgR0C1weF')
             }catch(error){
                 console.log(error) ;

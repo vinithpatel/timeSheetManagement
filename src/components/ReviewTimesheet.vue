@@ -39,6 +39,18 @@
                   ></v-text-field>
             </v-col>
 
+            <v-col cols="12" md="3">
+              <v-text-field                   
+                    density="compact"
+                    variant="outlined"
+                    placeholder="Employee Name"
+                    type="number"
+                    hide-details
+                    v-model="searchEmployeeId"
+                    @update:modelValue="onupdateInput"
+                  ></v-text-field>
+            </v-col>
+
             <v-col cols="12" md="12" v-if="timePeriod === 'customDate'">   
               <div class="d-flex flex-row align-center">
                   <DateRange v-on:updateDateRange="updateDateRange" />

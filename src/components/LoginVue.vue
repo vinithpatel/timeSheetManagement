@@ -124,6 +124,7 @@
 
             const response = await fetch("http://localhost:8001/login", options)
             const data = await response.json() ;
+            console.log(data) ;
 
             if(response.ok){
                 this.$store.commit('updateEmployeeDetailsAndLogin', data) ;
