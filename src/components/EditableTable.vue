@@ -3,7 +3,7 @@
         <div class="w-100 d-flex flex-row align-center justify-end">
             <v-btn 
                 v-if="!isSaved && ! isMoreEightHours && getTotal <=40" 
-                color="primary" class="mr-2" @click="onClickSave" :loading="saveLodaing">
+                color="primary" class="mr-2" @click="onClickSave" :loading="saveLodaing" :disabled="!form">
                 Save
             </v-btn>
 
@@ -17,7 +17,7 @@
                 variant="outlined" 
                 color="#b93bd9"
                 v-bind="props"
-                v-bind:disabled="!isSaved || isMoreEightHours || getTotal < 40 || getTotal > 40 || isTimeSheetValid"
+                v-bind:disabled="!isSaved || isMoreEightHours || getTotal < 40 || getTotal > 40 || isTimeSheetValid || !form" 
                 >
                     Review and Submit
                 </v-btn>
@@ -48,6 +48,7 @@
 
         </div>
     <v-container >
+        <v-form v-model="form">
         <v-row >
             <v-table  height="400px">
                 <thead>
@@ -73,15 +74,16 @@
                     :key="rowObj.id"
                     >
                     <td>
-                        <div class="mt-6 mb-6" >
+                        <div >
                             <v-select
+                            class="mt-6"
                             label="Select Project"
                             :items="localProjectsList"
                             variant="outlined"
                             :model-value="rowObj.projectName"
-                            hide-details
-                            @update:model-value="setProjectValue($event,{rowId:rowObj.id, name:'projectName'})"              
-                            ></v-select>              
+                            :rules="projectSelectRules"
+                            @update:model-value="setProjectValue($event,{rowId:rowObj.id, name:'projectName'})"        
+                            ></v-select>          
                         </div>
                     </td>
                     <td class="text-center pa-1" style="width:95px;">
@@ -246,6 +248,7 @@
                 </tbody>
             </v-table>
         </v-row>
+    </v-form>
         <div class="mt-4 d-flex flex-row align-center justify-space-between">
             <v-btn v-if="timeSheetList.length < projectList.length" color="#0047ba" prepend-icon="mdi-plus"  @click="addNewRow" >
                   New Row
@@ -272,6 +275,7 @@
         data(){
             return (
                 {
+                    form:true,
                     isHovering:false,
                     dialog:false,
                     sheetObj:this.timeSheetObj,
@@ -281,6 +285,24 @@
                     localProjectsList:[],
                     submitLoading:false ,
                     daysList:['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'satuarday', 'sunday'],
+
+                    projectSelectRules:[
+                        value => {
+                            const projectObj = this.projectList.find(each => each.projectName === value) ;
+                            
+                            if(projectObj === undefined){
+                                return "Select Project"
+                            }
+                            else if(projectObj.startDate > this.endDate){
+                                return "Project Not yet Started" 
+                            }
+                            else if(projectObj.endDate < this.startDate){
+                                return "Project Deadline Exceeded" ;
+                            }
+                            
+                            return true ;
+                        }
+                    ]
                 }
             )
         },
@@ -307,7 +329,7 @@
     
         computed:{
             ...mapState([
-                'employeeId','employeeName','selectedWeek','projectList'
+                'employeeId','employeeName','selectedWeek','projectList', 'startDate', 'endDate'
             ]),
 
             getTotal(){
@@ -435,8 +457,8 @@
         setProjectValue(projectName, obj){
             const projectObj = this.projectList.find(each => each.projectName === projectName)
 
-            console.log(projectObj.projectId)
-            console.log(projectObj.projectName)
+            // console.log(projectObj.projectId)
+            // console.log(projectObj.projectName)
 
             this.setRowValue(projectObj.projectId, {...obj,name:'projectId'}) ; //overwring the obj 
             this.setRowValue(projectObj.projectName, obj) ;

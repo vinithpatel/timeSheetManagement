@@ -205,7 +205,9 @@ export default createStore({
             
             if(response.ok){
                 const data = await response.json() ;
+
                 store.state.projectList = data ;
+                
                 console.log(store.state.projectList) ;
             }
         },
