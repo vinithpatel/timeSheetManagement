@@ -93,8 +93,21 @@
                             <v-expansion-panel
                               v-for="projectObj in employeeProjectsList"
                               :key="projectObj.projectId"
-                              :title="projectObj.projectName"
                             >
+
+                            <v-expansion-panel-title >
+                              <v-row no-gutters justify="space-between">
+                                <v-col cols="4">
+                                  {{ projectObj.projectName }}
+                                </v-col>
+                                <v-col cols="4" >
+                                   <div :style="{color:getProjectStatusColor(projectObj)}">
+                                    {{getProjectStatus(projectObj)}}
+                                  </div> 
+                                </v-col>
+                              </v-row>
+                            </v-expansion-panel-title>
+
                               <v-expansion-panel-text>
                                 <ProjectAssignmentExpansion v-slot="{form, projectDetails}" :projectData="projectObj" >
                                   <v-row justify="end">
@@ -148,6 +161,7 @@
 <script>
   import { mapState,mapGetters } from 'vuex';
   import ProjectAssignmentExpansion from './ProjectAssignmentExpansion.vue';
+  import {format} from "date-fns"
 
 export default {
     data(){
@@ -195,6 +209,34 @@ export default {
 
       onSearchProjects(){
         this.getProjectsList() ;
+      },
+
+      getProjectStatusColor(projectObj){
+        const text = this.getProjectStatus(projectObj)
+        
+
+        if(text === 'Deadline Exceeded'){
+          return 'red'
+        }else if(text === 'Not Yet Started'){
+          return 'blue'
+        }
+        else if(text === 'In Progress'){
+          return 'green'
+        }
+        return ''
+      },
+
+      getProjectStatus(projectObj){
+          const date = new Date() ;
+          const formatDate = format(date, 'yyyy-MM-dd') ;
+
+          if(projectObj.endDate < formatDate){
+            return "Deadline Exceeded"; 
+          }else if(projectObj.startDate > formatDate){
+            return "Not Yet Started" ;
+          }else{
+            return "In Progress" ;
+          }
       },
 
       async onClickAddProject(projectDetails){
