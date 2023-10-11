@@ -65,7 +65,7 @@
               <v-btn color="success" @click="onClickExportButton" :loading="exportLoading">
                 Export
               </v-btn>
-              <p class="errorMsg">{{ emptyMsg }}</p>
+              <p class="errorMsg text-subtitle-2">{{ emptyMsg }}</p>
             </div>
 
             </v-col>
@@ -295,7 +295,7 @@
             }
             
           }else{
-            this.emptyMsg = 'No Data Availble'
+            this.emptyMsg = 'Select Atleast One'
           }
 
           this.exportLoading = false;
@@ -303,7 +303,7 @@
 
         async getWeekData(employeeId){
           const url = `http://localhost:8001/timesheet/employee/${employeeId}/weekly_export/${this.weekValue}`
-          console.log(url) ;
+          
           const options = {
             method:"GET",
             headers:{
@@ -416,19 +416,25 @@
                 // Add more text or data as needed...
 
 
-                const columns = ["Project Id", "Project Name", "Hours", "Cost (Euros)"] ;
+                const columns = ["Project Id", "Project Name","Type", "Hours","Rate", "Cost", "Currency", "Customer"] ;
 
-                let totalCost = 0 ;
-                let totalHours = 0 ; 
+                //let totalCost = 0 ;
+                let totalBillableHours = 0 ;
+                let totalNonbillableHours = 0 ; 
 
                 const tableData = data.map(each => {
-                      totalCost += each.cost ;
-                      totalHours += each.total ;
+                      //totalCost += each.cost ;
+                      totalBillableHours += each.projectType === "Billable"? each.total : 0 ;
+                      totalNonbillableHours += each.projectType === "Non-Billable" ? each.total : 0 ;
 
-                      return [each.projectId, each.projectName, each.total,  each.cost] ;
+
+                      return [each.projectId, each.projectName,each.projectType, each.total,each.rate,each.cost, each.currency,each.customerName] ;
                 })
 
-                tableData.push(['Total', '', totalHours, totalCost]) ;
+                tableData.push([]);
+
+                tableData.push(['Total', '','Billable', totalBillableHours,'', /*totalCost*/]) ;
+                tableData.push(['Total', '','Non-Billable', totalNonbillableHours, '', ''])
 
                 doc.autoTable({
                   head:[columns],
@@ -460,14 +466,16 @@
 
           for (let obj of dataList){
             const {employeeData, data} = obj ;
-            let totalCost = 0 ;
-            let totalHours = 0 ;
+            //let totalCost = 0 ;
+            let totalBillableHours = 0 ;
+            let totalNonbillableHours = 0 ; 
 
             const tableData = data.map(each => {
-                  totalCost += each.cost ;
-                  totalHours += each.total ;
+                  //totalCost += each.cost ;
+                  totalBillableHours += each.projectType === "Billable"? each.total : 0 ;
+                  totalNonbillableHours += each.projectType === "Non-Billable" ? each.total : 0 ;
 
-                  return [each.projectId, each.projectName, each.total,each.rate, each.cost] ;
+                  return [each.projectId, each.projectName, each.projectType,each.total,each.rate, each.cost, each.currency, each.customerName] ;
             })
   
             const exportData = [
@@ -476,9 +484,11 @@
               ["Position",employeeData.position],
               ["Period", this.getPeriod()],
               [],
-              ["Project Id", "Project Name", "Hours","Rate", "Cost (Euros)"],
+              ["Project Id", "Project Name","Type", "Hours","Rate", "Cost", "Currency", "Customer"],
               ...tableData,
-              ["Total", '', totalHours,'', totalCost]
+              [],
+              ["Total", '','Billable', totalBillableHours],
+              ["Total", '', "Non-Billable", totalNonbillableHours]
             ];
 
             //creating work sheet for each employee
@@ -487,8 +497,14 @@
             
           }
           
+          if(this.timePeriod === "week"){
+            writeFile(wb, 'weekly_timesheet_report.xlsx' ) ;
+          }else if(this.timePeriod === 'month'){
+            writeFile(wb, 'monthly_timesheet_report.xlsx' ) ;
+          }else if(this.timePeriod === 'custom'){
+            writeFile(wb, 'custom_date_timesheet_report.xlsx' ) ;
+          }
           
-          writeFile(wb, this.timePeriod === "week" ? 'weekly_timesheet_report.xlsx' : 'monthly_timesheet_report.xlsx') ;
 
         },
 
