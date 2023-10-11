@@ -416,7 +416,7 @@
                 // Add more text or data as needed...
 
 
-                const columns = ["Project Id", "Project Name","Type", "Hours","Rate", "Cost", "Currency", "Customer"] ;
+                const columns = ["Project Id", "Project Name","Type","Role", "Hours","Rate", "Cost", "Currency", "Customer"] ;
 
                 //let totalCost = 0 ;
                 let totalBillableHours = 0 ;
@@ -428,13 +428,13 @@
                       totalNonbillableHours += each.projectType === "Non-Billable" ? each.total : 0 ;
 
 
-                      return [each.projectId, each.projectName,each.projectType, each.total,each.rate,each.cost, each.currency,each.customerName] ;
+                      return [each.projectId, each.projectName,each.projectType,each.positionName, each.total,each.rate,each.cost, each.currency,each.customerName] ;
                 })
 
                 tableData.push([]);
 
-                tableData.push(['Total', '','Billable', totalBillableHours,'', /*totalCost*/]) ;
-                tableData.push(['Total', '','Non-Billable', totalNonbillableHours, '', ''])
+                tableData.push(['Total', '','Billable','', totalBillableHours,'', /*totalCost*/]) ;
+                tableData.push(['Total', '','Non-Billable','', totalNonbillableHours, '', '']) ;
 
                 doc.autoTable({
                   head:[columns],
@@ -475,7 +475,7 @@
                   totalBillableHours += each.projectType === "Billable"? each.total : 0 ;
                   totalNonbillableHours += each.projectType === "Non-Billable" ? each.total : 0 ;
 
-                  return [each.projectId, each.projectName, each.projectType,each.total,each.rate, each.cost, each.currency, each.customerName] ;
+                  return [each.projectId, each.projectName, each.projectType,each.positionName,each.total,each.rate, each.cost, each.currency, each.customerName] ;
             })
   
             const exportData = [
@@ -484,11 +484,11 @@
               ["Position",employeeData.position],
               ["Period", this.getPeriod()],
               [],
-              ["Project Id", "Project Name","Type", "Hours","Rate", "Cost", "Currency", "Customer"],
+              ["Project Id", "Project Name","Type","Role", "Hours","Rate", "Cost", "Currency", "Customer"],
               ...tableData,
               [],
-              ["Total", '','Billable', totalBillableHours],
-              ["Total", '', "Non-Billable", totalNonbillableHours]
+              ["Total", '','Billable','', totalBillableHours],
+              ["Total", '', "Non-Billable",'', totalNonbillableHours]
             ];
 
             //creating work sheet for each employee
