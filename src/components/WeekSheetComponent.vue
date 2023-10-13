@@ -28,7 +28,7 @@
             
             <v-card-actions>
             <v-spacer></v-spacer>
-            <div v-if="isAdmin && timeSheet.status === 'submited'">
+            <div v-if="(timeSheet.reportingManagerId === employeeId || isAdmin) && timeSheet.status === 'submited'">
                 
                 <AdminButton color="warning" text="Re-open" @onClickOpen="onClickOpen" :loading="openLoading"/>
 
@@ -73,7 +73,7 @@ export default {
 
     computed:{
         ...mapState([
-            'isAdmin'
+            'isAdmin', 'employeeId'
         ]),
 
         ...mapGetters([

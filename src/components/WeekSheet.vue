@@ -29,9 +29,7 @@
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn icon="mdi-export-variant" @click="downloadPDF">
-
-            </v-btn>
+            
             <v-btn
                 color="blue-darken-1"
                 variant="text"
@@ -40,7 +38,7 @@
                   Cancel
             </v-btn>
 
-            <div v-if="isAdmin && timeSheet.status === 'submited'">
+            <div v-if="(timeSheet.reportingManagerId === employeeId || isAdmin) && timeSheet.status === 'submited'">
                 
                 <AdminButton color="warning" text="Re-open" @onClickOpen="onClickOpen" :loading="openLoading"/>
 

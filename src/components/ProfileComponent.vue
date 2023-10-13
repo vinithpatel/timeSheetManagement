@@ -1,6 +1,6 @@
 <template>
     <v-container fluid class="h-100 w-100" > 
-      <v-sheet v-if="!loading" variant="elevated" >
+      <v-sheet variant="elevated" >
           <v-toolbar height="50" theme="dark" color="primary">
             <v-toolbar-title>PROFILE</v-toolbar-title>
             <v-toolbar-items>

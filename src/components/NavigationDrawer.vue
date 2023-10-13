@@ -3,19 +3,14 @@
         expand-on-hover
         rail
       >
-        <v-list-item
-          prepend-avatar="https://randomuser.me/api/portraits/men/85.jpg"
-          title="Employee"
-          nav
-        >
-          <template v-slot:append>
-            <v-btn
-              variant="text"
-              icon="mdi-chevron-left"
-              @click.stop="rail = !rail"
-            ></v-btn>
-          </template>
-        </v-list-item>
+        <router-link to="/profile" class="router-link">
+          <v-list-item
+            prepend-avatar="https://media.istockphoto.com/id/1300845620/vector/user-icon-flat-isolated-on-white-background-user-symbol-vector-illustration.jpg?s=612x612&w=0&k=20&c=yBeyba0hUkh14_jgv1OKqIH0CCSWU_4ckRkAoy2p73o="
+            :title="$store.state.employeeName"
+            nav
+          >
+          </v-list-item>
+        </router-link>
 
         <v-divider></v-divider>
 
