@@ -191,6 +191,7 @@ export default createStore({
                 const data = await response.json() ;
                 console.log(data) ;
                 store.commit('updateEmployeeDetailsAndLogin', data) ;
+                this.dispatch('getProjectData') ;
             }
         },
 
