@@ -266,7 +266,7 @@
 
 <script>
     import {v4 as uuidV4} from "uuid";
-    import {mapState} from "vuex"
+    import {mapState, mapGetters} from "vuex"
     import ReviewTable from "./ReviewTable.vue";
     import InputField from "./InputField.vue" ;
 
@@ -331,6 +331,8 @@
             ...mapState([
                 'employeeId','employeeName','selectedWeek','projectList', 'startDate', 'endDate'
             ]),
+
+            ...mapGetters(['getHeaders']),
 
             getTotal(){
                 const list = this.timeSheetList ;
@@ -511,9 +513,7 @@
                 const url = `http://localhost:8001/timesheet/projects/${this.sheetObj.timeSheetId}` ;
                 const options = {
                     method:"GET",
-                    headers:{
-                        'Content-Type':'application/json',
-                    }
+                    ...this.getHeaders,
                 }
 
                 const response = await fetch(url, options) ;
@@ -537,10 +537,7 @@
 
                 const options = {
                     method:"PUT",
-                    headers:{
-                        'Content-Type':"application/json",
-                        'Accept':"application/json",
-                    },
+                    ...this.getHeaders,
 
                     body:JSON.stringify({arr:this.timeSheetList}) 
                 }

@@ -125,6 +125,7 @@
 
 <script>
     import CommentPopup from "./CommentPopup.vue"
+    import { mapGetters } from "vuex";
 
     export default({
         data(){
@@ -154,6 +155,8 @@
         },
 
         computed:{
+
+            ...mapGetters(['getHeaders']),
 
             getTotal(){
                
@@ -191,9 +194,7 @@
                 const url = `http://localhost:8001/timesheet/projects/${this.sheetObj.timeSheetId}` ;
                 const options = {
                     method:"GET",
-                    headers:{
-                        'Content-Type':'application/json',
-                    }
+                    ...this.getHeaders,
                 }
 
                 try{

@@ -79,7 +79,6 @@
 </template>
 
 <script>
-    import router from "../router.js"
 
     export default {
     data () {
@@ -124,12 +123,9 @@
 
             const response = await fetch("http://localhost:8001/login", options)
             const data = await response.json() ;
-            console.log(data) ;
 
             if(response.ok){
-                this.$store.commit('updateEmployeeDetailsAndLogin', data) ;
-                this.$store.commit('updateLoginDetailsInLocal', data) ;
-                router.push("/")
+                await this.$store.dispatch('onSuccesfullLogin', data.jwtToken) ;
             }
             else{
                 this.errorMsg = data.text ;

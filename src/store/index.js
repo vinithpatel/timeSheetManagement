@@ -7,6 +7,8 @@ import router from "../router.js" ;
 
 export default createStore({
     state:{
+        jwtToken:'',
+        redirectPath:'/',
         employeeDetails:{},
         employeeId:null,
         employeeName:'',
@@ -46,35 +48,26 @@ export default createStore({
 
     mutations:{
 
+        updateJwtToken(state,jwtToken){
+            state.jwtToken = jwtToken ;
+            localStorage.setItem('timesheetJwtToken', JSON.stringify(jwtToken)) ;
+        },
+
         updateEmployeeDetailsAndLogin(state, obj){
             state.employeeId = obj.employeeId ;
             state.employeeName = obj.employeeName ;
             state.email = obj.officialMail ;
             state.isAdmin = obj.isAdmin ;
-            state.isLogin = true ;
 
             state.employeeDetails = obj ;
+
+            state.isLogin = true ;
+            router.push(state.redirectPath) ;
             
         },
 
-        updateLoginDetailsInLocal(state, obj){
-            
-            localStorage.setItem('employeeDetails', JSON.stringify(obj)) ;
-        },
-
-        updateLoginDetailsInState(state){
-            const data = localStorage.getItem('employeeDetails')
-            const jsonData = JSON.parse(data);
-
-            if(jsonData !== null){
-                state.employeeId = jsonData.employeeId ;
-                state.employeeName = jsonData.employeeName ;
-                state.email = jsonData.email ;
-                state.isAdmin = jsonData.isAdmin ;
-                state.isLogin = true ;
-
-                state.employeeDetails = jsonData;
-            }
+        setRedirectPath(state, redirectPath){
+            state.redirectPath = redirectPath ;
         },
 
         updateDaysOfWeek(state){
@@ -144,7 +137,7 @@ export default createStore({
         onLogout(state){
             state.isLogin = false ;
 
-            localStorage.removeItem('employeeDetails') ;
+            localStorage.removeItem('timesheetJwtToken') ;
         },
 
         showNotification(state, message){
@@ -163,6 +156,44 @@ export default createStore({
     },
 
     actions:{
+        async onSuccesfullLogin(store, jwtToken){
+            store.commit('updateJwtToken', jwtToken) ;          
+            await this.dispatch('getEmployeeProfileDetails') ;
+        },
+
+        checkUserValidity(store){
+            let jwtToken = localStorage.getItem('timesheetJwtToken') ;
+
+            jwtToken = JSON.parse(jwtToken) ;
+
+
+            if(jwtToken !== null){
+                store.state.jwtToken = jwtToken ;
+                this.dispatch('getEmployeeProfileDetails')
+            }
+        },
+
+        async getEmployeeProfileDetails(store){
+            const url = "http://localhost:8001/employee/profile"
+
+            const options = {
+                method:"GET",
+                headers:{
+                    'Content-Type':"application/json",
+                    "Accept":"application/json",
+                    'Authorization': `Bearer ${store.state.jwtToken}`
+                }
+            }
+
+            const response = await fetch(url, options) ;
+            
+            if(response.ok){
+                const data = await response.json() ;
+                console.log(data) ;
+                store.commit('updateEmployeeDetailsAndLogin', data) ;
+            }
+        },
+
         showNotification(store, message){
             store.commit('showNotification', message) 
 
@@ -357,13 +388,15 @@ export default createStore({
             }
         },
 
-        getEmployeeDetails(){
+        getEmployeeDetails(state){
             return async (employeeId) => {
                 const url = `http://localhost:8001/employee/${employeeId}`
                 const options = {
                     method:"GET",
                     headers:{
                         'Content-Type':'application/json',
+                        'Accept':"application/json",
+                        Authorization:`Bearer ${state.jwtToken}`
                     }
                 }
 
@@ -376,6 +409,18 @@ export default createStore({
                 return {}
  
             }
+        },
+
+        getHeaders(state){
+            return (
+                {
+                    headers:{
+                        'Content-Type':"application/json",
+                        'Accept':"application/json",
+                        Authorization:`Bearer ${state.jwtToken}`
+                    }
+                }
+            )
         }
     },
 

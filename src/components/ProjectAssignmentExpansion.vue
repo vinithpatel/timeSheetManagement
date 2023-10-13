@@ -72,7 +72,7 @@
 </template>
 
 <script>
-    import { mapState } from 'vuex';
+    import { mapState, mapGetters } from 'vuex';
 
     export default({
         data(){
@@ -98,6 +98,7 @@
 
         computed:{
             ...mapState(['fieldRules']),
+            ...mapGetters(['getHeaders']),
         },
 
         methods:{
@@ -106,9 +107,7 @@
 
                 const options = {
                     method:"GET",
-                    headers:{
-                        'Content-Type':'application/json',
-                    }
+                    ...this.getHeaders,
                 }
 
                 const response = await fetch(url, options)

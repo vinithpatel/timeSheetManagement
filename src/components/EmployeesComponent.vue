@@ -84,6 +84,7 @@
 <script>
 //import ProjectAssignment from './ProjectAssignment.vue'
 import NewEmployeePopup from './NewEmployeePopup.vue'
+import { mapGetters } from 'vuex'
 
 export default {
 
@@ -100,6 +101,10 @@ export default {
       NewEmployeePopup,//ProjectAssignment
   },
 
+  computed:{
+    ...mapGetters(['getHeaders'])
+  },
+
   methods:{
     onupdateInput(){
       this.getEmployees() 
@@ -111,9 +116,7 @@ export default {
       const url = `http://localhost:8001/employees?employeeId=${this.employeeId}&&employeeName=${this.employeeName}`
       const options = {
         method:"GET",
-        headers:{
-          'Content-Type':"application/json",
-        }
+        ...this.getHeaders,
       }
 
       const response = await fetch(url, options) ;

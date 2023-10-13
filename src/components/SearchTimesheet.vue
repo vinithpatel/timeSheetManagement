@@ -118,7 +118,7 @@
   import DateRange from "./DateRange.vue" 
   import WeekSheet from "./WeekSheet.vue" ;
   import TimesheetStatus from "./TimesheetStatus.vue"
-  import {mapState} from "vuex" ;
+  import {mapState, mapGetters} from "vuex" ;
 
     export default {
     name:"TimeSheet",
@@ -191,7 +191,9 @@
       computed:{
         ...mapState([
           'employeeId',
-        ])
+        ]),
+
+        ...mapGetters(['getHeaders'])
       },
 
       methods:{
@@ -248,9 +250,7 @@
 
           const options = {
             method:"GET",
-            headers:{
-              'Content-Type':'application/json'
-            }
+            ...this.getHeaders,
           }
 
           const response = await fetch(url, options) 

@@ -14,6 +14,8 @@ import CustomersComponent from "./components/CustomersComponent.vue"
 import Timesheet from "./components/TimeSheet.vue"
 import ReviewTimesheet from "./components/ReviewTimesheet.vue"
 import ProjectAssignment from "./components/ProjectAssignment.vue"
+import ProfileComponent from "./components/ProfileComponent.vue"
+import NotFound from "./components/NotFound.vue"
 
 const router = createRouter({
     history:createWebHistory(),
@@ -74,6 +76,17 @@ const router = createRouter({
             name:"Project Assignment",
             path:"/project_assignment/:employeeId",
             component:ProjectAssignment
+        },
+        {
+            name:"Profile",
+            path:'/profile',
+            component:ProfileComponent
+        },
+
+        {
+            name:"Not Found",
+            path:'/:catchAll(.*)',
+            component:NotFound,
         }
     ]
 })
@@ -81,6 +94,10 @@ const router = createRouter({
 
 router.beforeEach((to, from, next)=>{
     const isLogin = store.getters.getIsLogin;
+    
+    if(to.fullPath !== '/login'){
+        store.commit('setRedirectPath', to.fullPath) ;
+    }
     
     if(to.name !== "Login" && !isLogin){
         next({name:'Login'})

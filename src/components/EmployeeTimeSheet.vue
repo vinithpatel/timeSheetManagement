@@ -181,6 +181,7 @@ import WeekSheet from "./WeekSheet.vue" ;
 import TimesheetStatus from "./TimesheetStatus.vue"
 import jsPDF from "jspdf" ;
 import "jspdf-autotable";
+import {mapGetters} from 'vuex'
 
   export default {
   name:"TimeSheet",
@@ -287,6 +288,10 @@ import "jspdf-autotable";
       }
     },
 
+    computed:{
+      ...mapGetters(['getHeaders']),
+    },
+
     methods:{
 
       async onupdateInput(){
@@ -343,9 +348,7 @@ import "jspdf-autotable";
 
         const options = {
           method:"GET",
-          headers:{
-            'Content-Type':'application/json'
-          }
+          ...this.getHeaders,
         }
 
         const response = await fetch(url, options) 
@@ -369,9 +372,7 @@ import "jspdf-autotable";
 
         const options = {
           method:"GET",
-          headers:{
-            'Content-Type':'application/json'
-          }
+          ...this.getHeaders,
         }
 
         const response = await fetch(url, options) 
@@ -425,9 +426,7 @@ import "jspdf-autotable";
       this.getTimeSheets()
     },
 
-    computed:{
-     
-    }
+    
   }
 </script>
 

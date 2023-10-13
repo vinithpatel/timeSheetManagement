@@ -195,7 +195,7 @@ export default {
     computed:{
       ...mapState(['fieldRules']),
 
-      ...mapGetters(['getEmployeeDetails']),
+      ...mapGetters(['getEmployeeDetails', 'getHeaders']),
 
       distinctProjectsList(){
         return this.projectsList.filter(projectObj => this.employeeProjectsList.every(each => (each.projectId !== projectObj.projectId)))
@@ -246,9 +246,7 @@ export default {
 
          const options = {
             method:"PUT",
-            headers:{
-              'Content-Type':"application/json",
-            },
+            ...this.getHeaders,
             body:JSON.stringify(projectDetails)
           }
 
@@ -275,9 +273,7 @@ export default {
 
         const options = {
             method:"DELETE",
-            headers:{
-              'Content-Type':"application/json",
-            },
+            ...this.getHeaders,
             body:JSON.stringify(data)
           }
 
@@ -298,9 +294,7 @@ export default {
 
          const options = {
             method:"PUT",
-            headers:{
-              'Content-Type':"application/json",
-            },
+           ...this.getHeaders,
             body:JSON.stringify(projectDetails)
           }
 
@@ -319,9 +313,7 @@ export default {
           const url = `http://localhost:8001/projects/save/${this.employeeObj.employeeId}`
           const options = {
             method:"PUT",
-            headers:{
-              'Content-Type':"application/json",
-            },
+            ...this.getHeaders,
             body:JSON.stringify({projectsList:this.employeeProjectsList})
           }
           
@@ -347,9 +339,7 @@ export default {
         const url = `http://localhost:8001/projects?projectName=${this.searchProjectName}`
         const options = {
           method:"GET",
-          headers:{
-            'Content-Type':"application/json"
-          }
+          ...this.getHeaders,
         }
 
         const response = await fetch(url, options) ;
@@ -367,9 +357,7 @@ export default {
 
         const options = {
           method:"GET",
-          headers:{
-            'Content-Type':"application/json"
-          }
+          ...this.getHeaders,
         }
 
         const response = await fetch(url, options) ;

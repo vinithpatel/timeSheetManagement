@@ -41,7 +41,7 @@ export default {
   },
 
   created(){
-    this.$store.commit('updateLoginDetailsInState') ;
+    this.$store.dispatch('checkUserValidity') ;
   }
 
 }

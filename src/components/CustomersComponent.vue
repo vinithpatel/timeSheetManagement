@@ -126,7 +126,7 @@
     },
 
     computed:{
-      ...mapGetters(['getFormatedDateString'])
+      ...mapGetters(['getFormatedDateString','getHeaders'])
     },
 
 
@@ -142,9 +142,7 @@
 
         const options = {
           method:"GET",
-          headers:{
-            'Content-Type':"application/json"
-          }
+          ...this.getHeaders,
         }
 
         const response = await fetch(url, options) ;
@@ -161,9 +159,7 @@
           const url = `http://localhost:8001/customer/delete/${id}`
           const options = {
             method:"DELETE",
-            headers:{
-              'Content-Type':'application/json'
-            }
+            ...this.getHeaders,
           }
 
           const response = await fetch(url, options) ;

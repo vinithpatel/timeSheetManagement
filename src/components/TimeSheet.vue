@@ -51,7 +51,7 @@
   </template>
 
   <script>
-  import {mapState} from "vuex" ;
+  import {mapState, mapGetters} from "vuex" ;
   //import TableVue from './TableVue.vue';
   import EditableTable from "./EditableTable.vue"
   import NonEditableTable from "./NonEditableTable.vue"
@@ -77,6 +77,10 @@
           'startDate', 'endDate', 'employeeId'
         ]),
 
+        ...mapGetters([
+          'getHeaders'
+        ]),
+
         checkWeekDataExist(){
           return this.$store.getters.isWeekDataExist
         }
@@ -97,9 +101,7 @@
           
             const options = {
               method:"GET",
-              headers:{
-                'Content-Type':'application/json',
-              }
+              ...this.getHeaders,
             }
 
             const response = await fetch(url, options) ;
@@ -126,10 +128,7 @@
 
           const options = {
             method:"POST",
-            headers:{
-              'Content-Type':"application/json",
-              "Accept":"application/json"
-            },
+            ...this.getHeaders,
             body:JSON.stringify(body)
           }
 
@@ -155,7 +154,7 @@
           this.createSheetLoading = true ;
           const url = `http://localhost:8001/timesheet/recreate/${this.timeSheetObj.timeSheetId}`
 
-          const response = await fetch(url, {method:"POST", headers:{'Content-Type':'application/json'}}) ;
+          const response = await fetch(url, {method:"POST", ...this.getHeaders,}) ;
           
           if(response.ok){
             const data = await response.json() ;

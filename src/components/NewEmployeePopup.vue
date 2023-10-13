@@ -71,18 +71,24 @@
                             placeholder="Official Mail Id"
                             v-model="officialMail"
                                                        
-                        ></v-text-field>
+                            ></v-text-field>
 
                     </v-col>
 
                 </v-row>
 
-                <v-row align="end">
+                <v-row>
                     <v-col  cols="4">
-                        <div>
-                            <label>Date of Joining</label>
-                            <input type="date" class="date-input" placeholder="Date of Joining" v-model="doj" />
-                        </div>
+                        <v-text-field
+                            density="compact"
+                            variant="outlined"
+                            :rules="[rules.required]"
+                            placeholder="Date Of Joining"
+                            label="Date of Joining"
+                            v-model="doj"
+                            type="date"
+                                                       
+                        ></v-text-field>
                     </v-col>
 
                     <v-col cols="4">
@@ -95,9 +101,7 @@
                             item-title="employeeName"
                             :rules="[rules.required]"
                             placeholder="Reporting Manager"
-                            v-model="reportingManagerId"
-                            hide-details
-                                                       
+                            v-model="reportingManagerId"                                             
                         ></v-select>
                     </v-col>
                 </v-row>
@@ -175,6 +179,7 @@
 
 <script>
     //import {format} from "date-fns"
+    import {mapGetters} from "vuex" ;
 
     export default({
     data() {
@@ -216,6 +221,10 @@
         });
     },
 
+    computed:{
+        ...mapGetters(['getHeaders'])
+    },
+
     methods:{
         
         async onAddEmployee(){
@@ -239,10 +248,7 @@
 
             const options ={
                 method:"POST",
-                headers:{
-                    'Content-Type':"application/json",
-                },
-
+                ...this.getHeaders,
                 body:JSON.stringify(data) 
             }
 
@@ -275,9 +281,7 @@
 
                 const options = {
                 method:"GET",
-                headers:{
-                    'Content-Type':"application/json"
-                }
+                ...this.getHeaders,
                 }
 
                 const response = await fetch(url, options) ;
@@ -294,9 +298,7 @@
 
             const options = {
                 method:"GET",
-                headers:{
-                    'Content-Type':'application/json',
-                }
+                ...this.getHeaders,
             }
 
             const response = await fetch(url, options)
@@ -312,9 +314,7 @@
 
             const options = {
                 method:"GET",
-                headers:{
-                    'Content-Type':'application/json',
-                }
+                ...this.getHeaders,
             }
 
             const response = await fetch(url, options)

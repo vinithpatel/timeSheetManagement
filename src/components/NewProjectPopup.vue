@@ -150,6 +150,7 @@
 <script>
     import DateRange from './DateRange.vue';
     import {format} from "date-fns"
+    import { mapGetters } from 'vuex';
 
     export default({
     data() {
@@ -196,6 +197,10 @@
     },
     components: { DateRange },
 
+    computed:{
+        ...mapGetters(['getHeaders'])
+    },
+
     methods:{
         updateDateRange({startDate, endDate}){
             
@@ -224,9 +229,7 @@
 
             const options ={
                 method:"POST",
-                headers:{
-                    'Content-Type':"application/json",
-                },
+                ...this.getHeaders,
 
                 body:JSON.stringify(data) 
             }
@@ -260,9 +263,7 @@
 
                 const options = {
                 method:"GET",
-                headers:{
-                    'Content-Type':"application/json"
-                }
+               ...this.getHeaders,
                 }
 
                 const response = await fetch(url, options) ;

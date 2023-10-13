@@ -117,6 +117,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
 
     export default({
         data() {
@@ -151,6 +152,10 @@
             })
         },
 
+        computed:{
+            ...mapGetters(['getHeaders'])
+        },
+
         methods:{
             
             async onAddCustomer(){
@@ -169,9 +174,7 @@
 
                 const options ={
                     method:"POST",
-                    headers:{
-                        'Content-Type':"application/json",
-                    },
+                    ...this.getHeaders,
 
                     body:JSON.stringify(data) 
                 }

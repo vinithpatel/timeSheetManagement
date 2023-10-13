@@ -141,7 +141,7 @@
     },
 
     computed:{
-      ...mapGetters(['getFormatedDateString'])
+      ...mapGetters(['getFormatedDateString', 'getHeaders'])
     },
 
 
@@ -156,9 +156,7 @@
         const url = `http://localhost:8001/projects?projectName=${this.searchProjectName}`
         const options = {
           method:"GET",
-          headers:{
-            'Content-Type':"application/json"
-          }
+          ...this.getHeaders,
         }
 
         const response = await fetch(url, options) ;
@@ -177,9 +175,7 @@
           const url = `http://localhost:8001/project/delete/${projectId}`
           const options = {
             method:"DELETE",
-            headers:{
-              'Content-Type':'application/json'
-            }
+            ...this.getHeaders,
           }
 
           const response = await fetch(url, options) ;

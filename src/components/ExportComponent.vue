@@ -222,7 +222,7 @@
 
       computed:{
         ...mapGetters([
-          'getEmployeeDetails', 'getFormatedDateString'
+          'getEmployeeDetails', 'getFormatedDateString', 'getHeaders'
         ])
       },
 
@@ -306,9 +306,7 @@
           
           const options = {
             method:"GET",
-            headers:{
-              'Content-Type':'application/json',
-            },
+            ...this.getHeaders,
           }
 
           const response = await fetch(url, options) ;
@@ -358,9 +356,7 @@
             
             const options = {
               method:"GET",
-              headers:{
-                'Content-Type':'application/json',
-              },
+              ...this.getHeaders,
             }
 
             const response = await fetch(url, options) ;
@@ -380,9 +376,7 @@
             
             const options = {
               method:"GET",
-              headers:{
-                'Content-Type':'application/json',
-              },
+              ...this.getHeaders,
             }
 
             const response = await fetch(url, options) ;
@@ -416,7 +410,7 @@
                 // Add more text or data as needed...
 
 
-                const columns = ["Project Id", "Project Name","Type","Role", "Hours","Rate", "Cost", "Currency", "Customer"] ;
+                const columns = ["Project Id", "Project Name","Type","Role", "Hours","Rate", "Cost", "Currency", "Customer", "Cost Type"] ;
 
                 //let totalCost = 0 ;
                 let totalBillableHours = 0 ;
@@ -428,7 +422,7 @@
                       totalNonbillableHours += each.projectType === "Non-Billable" ? each.total : 0 ;
 
 
-                      return [each.projectId, each.projectName,each.projectType,each.positionName, each.total,each.rate,each.cost, each.currency,each.customerName] ;
+                      return [each.projectId, each.projectName,each.projectType,each.positionName, each.total,each.rate,each.cost, each.currency,each.customerName, each.costType] ;
                 })
 
                 tableData.push([]);
@@ -475,7 +469,7 @@
                   totalBillableHours += each.projectType === "Billable"? each.total : 0 ;
                   totalNonbillableHours += each.projectType === "Non-Billable" ? each.total : 0 ;
 
-                  return [each.projectId, each.projectName, each.projectType,each.positionName,each.total,each.rate, each.cost, each.currency, each.customerName] ;
+                  return [each.projectId, each.projectName, each.projectType,each.positionName,each.total,each.rate, each.cost, each.currency, each.customerName, each.costType] ;
             })
   
             const exportData = [
@@ -484,7 +478,7 @@
               ["Position",employeeData.position],
               ["Period", this.getPeriod()],
               [],
-              ["Project Id", "Project Name","Type","Role", "Hours","Rate", "Cost", "Currency", "Customer"],
+              ["Project Id", "Project Name","Type","Role", "Hours","Rate", "Cost", "Currency", "Customer", "Cost Type"],
               ...tableData,
               [],
               ["Total", '','Billable','', totalBillableHours],
@@ -514,9 +508,7 @@
             const url = `http://localhost:8001/employees?employeeId=${this.searchEmployeeId}&&employeeName=${this.searchEmployeeName}`
             const options = {
               method:"GET",
-              headers:{
-                'Content-Type':"application/json",
-              }
+              ...this.getHeaders,
             }
 
             const response = await fetch(url, options) ;

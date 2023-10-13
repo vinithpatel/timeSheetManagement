@@ -77,7 +77,7 @@ export default {
         ]),
 
         ...mapGetters([
-            'getFormatedDateString'
+            'getFormatedDateString', 'getHeaders'
         ])
     },
 
@@ -89,9 +89,7 @@ export default {
 
         const options = {
             method:"GET",
-            headers:{
-                'Content-Type':"application/json",
-            }
+            ...this.getHeaders,
         };
 
         const response = await fetch(url, options) ;
