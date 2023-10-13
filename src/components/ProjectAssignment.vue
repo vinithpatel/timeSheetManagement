@@ -11,6 +11,9 @@
             <v-row >
               <v-col cols="12">
                 <div class="font-weight-medium text-uppercase">
+                  {{ `Employee id : ${employeeObj.employeeId}` }}
+                </div>
+                <div class="font-weight-medium text-uppercase">
                   {{ `Name : ${employeeObj.employeeName}` }}
                 </div>
                 <div>
