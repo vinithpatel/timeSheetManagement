@@ -323,23 +323,25 @@ export default createStore({
 
         async sendEmail(store, obj){
 
-            const {timeSheetId, startDate, endDate} = obj ;
+            console.log(obj)
 
-            try{
-                const response = await emailjs.send('service_evxhn1b','template_vcdvhmt',
-                {
-                    employeeName: store.state.employeeName,
-                    employeeId:store.state.employeeId,
-                    timesheetId:timeSheetId,
-                    startDate,
-                    endDate,
-                    email:store.state.employeeDetails.reportingManagerMail
+            // const {timeSheetId, startDate, endDate} = obj ;
 
-                }, '75B7CIXrKgR0C1weF')
-                console.log( response)
-            }catch(error){
-                console.log(error) ;
-            }
+            // try{
+            //     const response = await emailjs.send('service_evxhn1b','template_vcdvhmt',
+            //     {
+            //         employeeName: store.state.employeeName,
+            //         employeeId:store.state.employeeId,
+            //         timesheetId:timeSheetId,
+            //         startDate,
+            //         endDate,
+            //         email:store.state.employeeDetails.reportingManagerMail
+
+            //     }, '75B7CIXrKgR0C1weF')
+            //     console.log( response)
+            // }catch(error){
+            //     console.log(error) ;
+            // }
             
         },
 

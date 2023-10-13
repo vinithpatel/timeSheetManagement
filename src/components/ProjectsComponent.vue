@@ -84,7 +84,7 @@
                 >
                   <td >{{ item.projectId }}</td>
                   <td>{{ item.projectName}}</td>
-                  <td>{{ item.type }}</td>
+                  <td>{{ item.projectType }}</td>
                   <td class="text-center" >{{ getFormatedDateString(item.startDate) }}</td>
                   <td class="text-center" >{{ getFormatedDateString(item.endDate) }}</td>
                   <td><CommentPopup :comment="item.description" /></td>
@@ -93,7 +93,7 @@
                   <td >
                     <div >
                       <div class="d-flex flex-row aling-center">{{ item.cost }}<p v-if="item.cost !== null">({{ item.currency }})</p></div>
-                      <div v-if="item.type==='Billable' && item.costType==='Time & Material'" style="font-size:12px;">Time & Material</div>
+                      <div v-if="item.projectType==='Billable' && item.costType==='Time & Material'" style="font-size:12px;">Time & Material</div>
                     </div>
                   </td>
                   <td>

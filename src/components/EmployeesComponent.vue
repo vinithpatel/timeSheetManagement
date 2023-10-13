@@ -54,13 +54,16 @@
             :rounded="true"
           >
     
-            <router-link :to="`project_assignment/${item.employeeId}`">
+            
               <v-row justify="end">
                 <v-col cols="2">
-                  <v-btn color="primary">Assign Projects</v-btn>
+                  <router-link :to="`project_assignment/${item.employeeId}`"><v-btn color="primary">Assign Projects</v-btn></router-link>
+                </v-col>
+                <v-col cols="2">
+                  <v-btn color="#ab1e02"  @click="deleteEmployee(item.employeeId)">DELETE EMPLOYEE</v-btn>
                 </v-col>
               </v-row>
-            </router-link>
+            
            
         </v-list-item>
           </v-list>
@@ -94,6 +97,7 @@ export default {
       employeeId:'',
       employeeName:'',
       employeesList:[],
+
     })
   },
 
@@ -126,6 +130,23 @@ export default {
         this.employeesList = data
         this.loading = false
         console.log(data) ;
+      }
+    },
+
+    async deleteEmployee(employeeId){
+      
+      const url = `http://localhost:8001/employee/delete/${employeeId}`
+
+      const options = {
+        method:"DELETE",
+        ...this.getHeaders,
+      }
+
+      const response = await fetch(url, options) ;
+
+      if(response.ok){
+        
+        this.getEmployees() ;
       }
     }
   },
