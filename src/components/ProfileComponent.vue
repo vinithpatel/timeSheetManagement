@@ -17,13 +17,89 @@
                         <span class="text-h5">{{ employeeDetails.employeeName[0] }}</span>
                     </v-avatar>
                 </v-col>
-                <v-col cols="2">
+                <v-col cols="3">
                     <div class="text-h5">
                         {{ employeeDetails.employeeName }}
                     </div>
                     <div >
                         {{`Id:  ${employeeDetails.employeeId} `}}
                     </div>
+                </v-col>
+                <v-col cols="4">
+                    <v-dialog height="480" width="400">
+                        <template v-slot:activator="{ props }">
+                            <v-btn variant="text" color="blue"  v-bind="props">
+                                Change Password
+                            </v-btn>
+                        </template>
+                        <template v-slot:default="{ isActive }">
+                    
+                        <v-card width="400" height="480">
+                            <v-card-title>
+                                <div class="w-100 d-flex flex-row align-center justify-space-between">
+                                    Change Password
+                                    <v-btn @click="onCloseDialog(isActive)" icon="mdi-close" variant="text">
+                                    </v-btn>
+                                </div>
+                            </v-card-title>
+                            <v-card-text>
+                                <v-form v-model="changePasswordForm" @submit.prevent="onClickChangePassword(isActive)">
+                                    <v-row>
+                                        <v-col cols="12">
+                                            <v-text-field
+                                            v-model="currentPassword"
+                                            label="Current Password"
+                                            :type="currentPasswordVisible ? 'text': 'password'"
+                                            :append-inner-icon="currentPasswordVisible ? 'mdi-eye-off' : 'mdi-eye'"
+                                            @click:append-inner="currentPasswordVisible = !currentPasswordVisible"
+                                            :rules="[fieldRules.required, fieldRules.password]"
+                                            ></v-text-field>
+                                        </v-col>
+                                        <v-col cols="12">
+                                            <v-text-field
+                                            v-model="newPassword"
+                                            label="New Password"
+                                            :type="newPasswordVisible ? 'text': 'password'"
+                                            :append-inner-icon="newPasswordVisible ? 'mdi-eye-off' : 'mdi-eye'"
+                                            @click:append-inner="newPasswordVisible = !newPasswordVisible"
+                                            :rules="[fieldRules.required, fieldRules.password]"
+                                            ></v-text-field>
+                                        </v-col>
+                                        <v-col cols="12">
+                                            <v-text-field
+                                            label="Confirm New Password"
+                                            v-model="confirmNewPassword"
+                                            :rules="[fieldRules.required,passwordMatchRule]"
+                                            :type="confirmNewPasswordVisible ? 'text': 'password'"
+                                            :append-inner-icon="confirmNewPasswordVisible ? 'mdi-eye-off' : 'mdi-eye'"
+                                            @click:append-inner="confirmNewPasswordVisible = !confirmNewPasswordVisible"
+                                            ></v-text-field>
+                                        </v-col>
+                                        
+                                    </v-row>
+
+                                    <v-row>
+                                        <v-col v-if="!isPasswordValid" >
+                                            <p style="font-size:11px; color:red;">
+                                                {{ passwordError }}
+                                            </p>
+                                        </v-col>
+                                        <v-col cols="12" >
+                                            <v-btn
+                                            type="submit"
+                                            block
+                                            color="blue"
+                                            text="Change Password"
+                                            :disabled="!changePasswordForm"
+                                            :loading="changePasswordLoading"
+                                            ></v-btn>
+                                        </v-col>
+                                    </v-row>                              
+                             </v-form>
+                            </v-card-text>
+                        </v-card>
+                        </template>
+                    </v-dialog>
                 </v-col>
             </v-row>
             
@@ -134,12 +210,32 @@ import {mapState, mapGetters} from "vuex" ;
     export default({
         data(){
             return ({
-                reportingManagerEmployeesList:[]
+                changePasswordForm:false,
+                currentPassword:null,
+                newPassword:null,
+                confirmNewPassword:null,
+                reportingManagerEmployeesList:[],
+
+                currentPasswordVisible:false,
+                newPasswordVisible:false,
+                confirmNewPasswordVisible:false,
+                isPasswordValid:true ,
+                passwordError:null,
+                changePasswordLoading:false,
+
+                passwordMatchRule:() => {
+                    if(this.newPassword !== this.confirmNewPassword){
+                        return "Password Doesn't Match" ;
+                    }
+
+                    return true ;
+                }
             })
         },
 
+
         computed:{
-            ...mapState(['employeeDetails','projectList', 'employeeId']) ,
+            ...mapState(['employeeDetails','projectList', 'employeeId','fieldRules']) ,
             ...mapGetters(['getHeaders'])
         },
 
@@ -156,11 +252,54 @@ import {mapState, mapGetters} from "vuex" ;
                 if(response.ok){
                     this.reportingManagerEmployeesList = await response.json() ;
                 }
+            },
+
+            async onClickChangePassword(isActive){
+                this.changePasswordLoading = true ;
+
+                const url = "http://localhost:8001/password/reset" ;
+
+                const options = {
+                    method:"PUT",
+                    ...this.getHeaders,
+                    body: JSON.stringify({currentPassword:this.currentPassword,newPassword:this.newPassword})
+                }
+
+                const response = await fetch(url, options) ;
+                const data = await response.json() ;
+
+                if(response.ok){
+                    this.onCloseDialog(isActive)
+                }else{
+                    this.isPasswordValid = false ;
+                    this.passwordError = data.message ;
+                    console.log(data.message)
+                }
+
+                this.changePasswordLoading = false ;
+            },
+
+            onCloseDialog(isActive){
+                isActive.value = false ;
+
+                //reseting data properties
+                this.changePasswordForm = false ;
+                this.currentPassword = null ;
+                this.newPassword = null ;
+                this.confirmNewPassword = null ;
+                
+
+                this.currentPasswordVisible = false;
+                this.newPasswordVisible = false ;
+                this.confirmNewPasswordVisible = false ;
+                this.isPasswordValid = true  ;
+                this.passwordError =null ;
             }
         },
 
         mounted(){
-            this.getReportingManagerEmployees()
+            this.getReportingManagerEmployees() ;
+            
         }
     })
 </script>

@@ -28,26 +28,40 @@
                         </div>
                     </td>
                     <td class="text-center" >
-                        <p>{{ checkAndGetValue(rowObj.monday) }}</p>
+                        <CommentPopup :comment="rowObj.mondayComment" >
+                            <p>{{ checkAndGetValue(rowObj.monday) }}</p>
+                        </CommentPopup>
                     </td>
                     <td class="text-center">
-                        <p>{{ checkAndGetValue(rowObj.tuesday) }}</p>
+                        <CommentPopup :comment="rowObj.tuesdayComment">
+                            <p>{{ checkAndGetValue(rowObj.tuesday) }}</p>
+                        </CommentPopup>
                     </td>
                     <td class="text-center">
-                        <p>{{ checkAndGetValue(rowObj.wednesday) }}</p>
+                        <CommentPopup :comment="rowObj.wednesdayComment">
+                            <p>{{ checkAndGetValue(rowObj.wednesday) }}</p>
+                        </CommentPopup>
                     </td>
                     
                     <td class="text-center">
-                        <p>{{ checkAndGetValue(rowObj.thursday) }}</p>
+                        <CommentPopup :comment="rowObj.thursdayComment" >
+                            <p>{{ checkAndGetValue(rowObj.thursday) }}</p>
+                        </CommentPopup>
                     </td>
                     <td class="text-center">
-                        <p>{{ checkAndGetValue(rowObj.friday) }}</p>
+                        <CommentPopup :comment="rowObj.fridayComment" >
+                            <p>{{ checkAndGetValue(rowObj.friday) }}</p>
+                        </CommentPopup>
                     </td>
                     <td class="text-center">
-                        {{ checkAndGetValue(rowObj.satuarday) }}
+                        <CommentPopup :comment="rowObj.satuardayComment">
+                            <p>{{ checkAndGetValue(rowObj.satuarday) }}</p>
+                        </CommentPopup>
                     </td>
                     <td class="text-center">
-                        {{ checkAndGetValue(rowObj.sunday) }}
+                        <CommentPopup :comment="rowObj.sundayComment" >
+                            <p>{{ checkAndGetValue(rowObj.sunday) }}</p>
+                        </CommentPopup>
                     </td>
 
 
@@ -98,7 +112,7 @@
 
 <script>
     import {mapState} from "vuex" 
-    //import CommentPopup from "./CommentPopup.vue"
+    import CommentPopup from "./CommentPopup.vue"
 
     export default({
         data(){
@@ -114,7 +128,7 @@
         ],
 
         components:{
-           // CommentPopup,
+            CommentPopup,
         },
 
         watch:{

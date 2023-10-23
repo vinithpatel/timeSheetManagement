@@ -42,6 +42,14 @@ export default createStore({
 
                 return "Invalid Email Address"
             },
+
+            password(value){
+                if(value.length >=8){
+                    return true ;
+                }
+
+                return "Password must be at least 8 characters"
+            }
         },
 
     },

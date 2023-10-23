@@ -35,7 +35,7 @@ export default {
             if(this.status === 'open'){
                 return "Open" ;
             }else if(this.status === 'submited'){
-                return "Submited" ;
+                return "Submitted" ;
             }else if(this.status === 'approved'){
                 return "Approved" ;
             }else if(this.status === "denied"){
