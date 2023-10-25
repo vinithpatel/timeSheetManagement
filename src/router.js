@@ -87,7 +87,8 @@ const router = createRouter({
             name:"Not Found",
             path:'/:catchAll(.*)',
             component:NotFound,
-        }
+        },
+        
     ]
 })
 
@@ -99,7 +100,7 @@ router.beforeEach((to, from, next)=>{
         store.commit('setRedirectPath', to.fullPath) ;
     }
     
-    if(to.name !== "Login" && !isLogin){
+    if(to.name !== "Login" && !isLogin ){
         next({name:'Login'})
     }else{
         next() ;
