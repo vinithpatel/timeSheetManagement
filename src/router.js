@@ -16,6 +16,8 @@ import ReviewTimesheet from "./components/ReviewTimesheet.vue"
 import ProjectAssignment from "./components/ProjectAssignment.vue"
 import ProfileComponent from "./components/ProfileComponent.vue"
 import NotFound from "./components/NotFound.vue"
+import ResetPassword from "./components/ResetPassword.vue"
+
 
 const router = createRouter({
     history:createWebHistory(),
@@ -84,6 +86,12 @@ const router = createRouter({
         },
 
         {
+            name:"Reset Password",
+            path:"/reset-password/:resetToken",
+            component: ResetPassword,
+        },
+
+        {
             name:"Not Found",
             path:'/:catchAll(.*)',
             component:NotFound,
@@ -100,7 +108,7 @@ router.beforeEach((to, from, next)=>{
         store.commit('setRedirectPath', to.fullPath) ;
     }
     
-    if(to.name !== "Login" && !isLogin ){
+    if(to.name !== "Login" && !isLogin && to.name !== 'Reset Password' ){
         next({name:'Login'})
     }else{
         next() ;
