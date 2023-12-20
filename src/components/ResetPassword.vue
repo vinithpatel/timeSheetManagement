@@ -13,11 +13,11 @@
             src="https://img.freepik.com/free-vector/forgot-password-concept-illustration_114360-1123.jpg?w=740&t=st=1698296974~exp=1698297574~hmac=40d9021866084c2ec121b0099c9ca32ae990d76c3d02080043fdc18d554f8f72"
             ></v-img>
         </div>
-        <div class="">
-        <h1 class="user-login-heading">REST PASSWORD</h1>
+        <div style="min-width: 50%;" v-if="!isPasswordReset">
+        <h1 class="user-login-heading">RESET PASSWORD</h1>
         <v-form
             v-model="form"
-            @submit.prevent="onSubmit"
+            @submit.prevent="onResetPassword"
             class="w-100"
         >
         <v-text-field
@@ -25,7 +25,7 @@
             placeholder="New Password"
             prepend-inner-icon="mdi-lock-outline"
             variant="outlined"
-            :rules="[fieldRules.required]"
+            :rules="[fieldRules.required, fieldRules.password]"
             class="mb-3"
             v-model="newPassword"
             :append-inner-icon="visible ? 'mdi-eye-off' : 'mdi-eye'"
@@ -40,28 +40,29 @@
             prepend-inner-icon="mdi-lock-outline"
             variant="outlined"
                                
-            :rules="[fieldRules.required]"
+            :rules="[fieldRules.required,fieldRules.password, confirmPasswordRule]"
             v-model="confirmPassword"
         ></v-text-field>
 
             <br>
             <p class="error-msg">{{ errorMsg }}</p>
-
-            
             <v-btn
             :disabled="!form"
-            :loading="loading"
             block
             color="primary"
             size="large"
             type="submit"
             variant="elevated"
+            :loading="buttonLoading"
             >
             Reset Password
             </v-btn>
             
             </v-form>    
         </div>        
+        <div v-if="isPasswordReset">
+            Password Reset sucessfull, redirecting to login...
+        </div>
         </v-sheet>
 
         <v-sheet 
@@ -81,6 +82,18 @@
         >
             Invalid URL
         </v-sheet>
+        
+        <v-sheet 
+        min-width="55%"
+        class="form-sheet mx-auto pa-5 d-flex flex-row justify-center align-center" 
+        rounded
+        v-if="pageLoading"
+        >
+            <v-progress-circular
+            indeterminate
+            color="primary"
+            ></v-progress-circular>
+        </v-sheet>
 
   </v-container>
 </template>
@@ -97,6 +110,18 @@ export default {
             newPassword:null,
             confirmPassword:null,
             responseStatus:null,
+            buttonLoading:false,
+            isPasswordReset:false,
+            errorMsg:'',
+            confirmPasswordRule:(value) => {
+
+                if(value === this.newPassword){
+                    return true ;
+                }
+
+                return "Password doesn't match"
+            }
+            
         }
     },
 
@@ -107,6 +132,9 @@ export default {
 
     methods:{
         async checkResetPage(){
+
+            this.pageLoading = true ;
+
             const {resetToken} = this.$route.params ;
 
             const url = `http://localhost:8001/reset-link-verify/${resetToken}` ;
@@ -124,9 +152,41 @@ export default {
             if(response.status !== 500){
                 const data = await response.json() ;
                 console.log(data.message) ;
-            }            
+            }   
+            
+            this.pageLoading = false ;
 
+        },
+
+        async onResetPassword(){
+            this.buttonLoading = true ;
+            const {resetToken} = this.$route.params ;
+
+            const url = "http://localhost:8001/reset-password/" ;
+
+            const options = {
+                method:"PUT",
+                ...this.getHeaders,
+                body:JSON.stringify({newPassword:this.newPassword,confirmPassword:this.confirmPassword,resetToken})
+            }
+
+            const response = await fetch(url, options) ;
+            const data = await response.json() ;
+            this.errorMsg = data.message ;
+            this.buttonLoading = false ;
+
+            if(response.ok){
+                this.isPasswordReset = true ;
+                setTimeout(()=>{
+                    this.$router.replace("/login")
+                }, 2000) ;
+            }
+                
+        
+
+            
         }
+
     },
 
     mounted(){
@@ -149,5 +209,10 @@ export default {
         font-weight:500;
         color:#b547a6 ;
         margin-bottom:20px;
+    }
+
+    .error-msg{
+        color:red;
+        font-size:12px;
     }
 </style>
